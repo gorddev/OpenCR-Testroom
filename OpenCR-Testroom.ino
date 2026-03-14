@@ -19,12 +19,11 @@ void loop() {
 
   for (auto& m : goblin.motors) {
     if (keys::is_held('w')) {
-      goblin.wb.goalVelocity(m.id, 40);
       m.setVelocity(40);
     } else if (keys::is_held('s')) {
-      goblin.wb.goalVelocity(m.id, -40);
+      m.setVelocity(-40);
+    } else {
+      m.setVelocity(0);
     }
   }
-
-  keys::flush();
 }
