@@ -17,7 +17,7 @@ namespace dxl {
 
         MotorList motors{};
 
-        void init() {
+        bool init() {
 
             if (initialized) {
                 CR_PANIC("dxl_workbench already initialized.");
@@ -32,6 +32,10 @@ namespace dxl {
 
             workbench::success("Connected to board.");
             initialized = true;
+
+            motors.findMotors();
+
+            return true;
         }
 
         Goblin(DynamixelWorkbench& wb, bool& init, uint16_t& status_num, const char*& log)
@@ -52,6 +56,8 @@ namespace serial {
     }
 }
 
-#define its_goblin_time() \
-    dxl::Goblin goblin(dxl::workbench::wb, dxl::workbench::initialized, dxl::workbench::status_num, dxl::workbench::cr_log);
+#define its_goblin_time(goblin_var_name) \
+    dxl::Goblin goblin_var_name(dxl::workbench::wb, dxl::workbench::initialized, dxl::workbench::status_num, dxl::workbench::cr_log);
+
+
 

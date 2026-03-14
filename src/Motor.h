@@ -117,7 +117,7 @@ namespace dxl {
             }
         }
 
-        void findMotors() {
+        bool findMotors() {
             if (count != 0) {
                 CR_PANIC("Already scanned for motors.");
                 CR_EXIT;
@@ -141,6 +141,7 @@ namespace dxl {
                 Serial.print(m.id); Serial.print(", ");
             }
             CR_PRINT("}\n");
+            return true;
         }
 
         bool verifyMotor(int8_t motor_id) const {
