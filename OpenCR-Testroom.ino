@@ -17,13 +17,15 @@ void setup() {
 void loop() {
   keys::read();
 
+  static int32_t goal_velocity = 0;
   for (auto& m : goblin.motors) {
     if (keys::is_held('w')) {
-      m.setVelocity(40);
+      goal_velocity += 40;
     } else if (keys::is_held('s')) {
-      m.setVelocity(-40);
-    } else {
-      m.setVelocity(0);
+      goal_velocity -= 40;
     }
+    m.setVelocity(goal_velocity);
   }
+
+  keys::flush();
 }

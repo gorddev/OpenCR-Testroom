@@ -16,12 +16,13 @@ namespace dxl {
         uint8_t id = -1;
         MotorMode mode = NO_MOTOR_MODE;
 
-        void setVelocity(float velocity) const {
+        void setVelocity(int32_t velocity) const {
             if (mode != WHEEL_MODE) {
                 workbench::success("Warning: Cannot set velocity as motor is not in wheel mode.");
                 return;
             }
-            if (workbench::wb.goalVelocity(id, velocity, &workbench::cr_log)) {
+            workbench::wb.goalVelocity(id, velocity);
+            if (!workbench::wb.goalVelocity(id, velocity)) {
                 CR_PANIC("Failed to set velocity mode for motor ");
                 CR_PRINT(id); CR_EXIT;
             }
@@ -29,7 +30,7 @@ namespace dxl {
 
         void setPosition(int32_t position) const {
             if (mode == JOINT_MODE) {
-                if (workbench::wb.goalPosition(id, position)) {
+                if (!workbench::wb.goalPosition(id, position)) {
                     CR_PANIC("Failed to set position mode for motor ");
                     CR_PRINT(id); CR_EXIT;
                 }
