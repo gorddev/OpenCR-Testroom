@@ -1,13 +1,28 @@
-#include "OpenCRMacros.h"
+#include "src/Keyboard.h"
+#include "src/Goblin.h"
+
+its_goblin_time();
 
 void setup() {
-  cr::setup_serial(BAUDRATE);
-  cr::init_dxl_workbench();
-  //cr::init_motor(4);
-  cr::init_motor(3);
+  serial::arduino_await();
+  goblin.init();
+  goblin.motors.findMotors();
+  for (auto& m : goblin.motors) {
+    m.setWheelMode(30);
+  }
 }
 
 void loop() {
-  keyboard::get_input();
-  keyboard::control(3);
+  keys::read();
+
+  for (auto& m : goblin.motors) {
+    if (keys::is_held('w')) {
+      goblin.wb.goalVelocity(m.id, 40);
+      m.setVelocity(40);
+    } else if (keys::is_held('s')) {
+      goblin.wb.goalVelocity(m.id, -40);
+    }
+  }
+
+  keys::flush();
 }
