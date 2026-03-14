@@ -21,11 +21,25 @@ namespace dxl {
                 workbench::success("Warning: Cannot set velocity as motor is not in wheel mode.");
                 return;
             }
-            workbench::wb.goalVelocity(id, velocity);
+            if (velocity > invar::vel_max)
+                velocity = invar::vel_max;
+            else if (velocity < -invar::vel_max)
+                velocity = -invar::vel_max;
+
             if (!workbench::wb.goalVelocity(id, velocity)) {
                 CR_PANIC("Failed to set velocity mode for motor ");
                 CR_PRINT(id); CR_EXIT;
             }
+        }
+
+        void changeVelocity(int32_t d_velocity) const {
+            const int32_t vel = getVelocity();
+            setVelocity(vel + d_velocity);
+        }
+
+        void changePosition(int32_t position) const {
+            const int32_t pos = getPosition();
+            setPosition(pos + position);
         }
 
         void setPosition(int32_t position) const {
@@ -39,9 +53,9 @@ namespace dxl {
             }
         }
 
-        float getVelocity() const {
-            float vel;
-            workbench::wb.getVelocity(id, &vel);
+        int32_t getVelocity() const {
+            int32_t vel;
+            workbench::wb.getPresentVelocityData(id, &vel);
             return vel;
         }
 
