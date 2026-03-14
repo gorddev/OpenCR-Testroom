@@ -7,9 +7,11 @@ void setup() {
   serial::arduino_await();
   goblin.init();
   goblin.motors.findMotors();
+
   for (auto& m : goblin.motors) {
     m.setWheelMode(30);
   }
+
 }
 
 void loop() {

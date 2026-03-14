@@ -72,6 +72,17 @@ namespace dxl {
             mode = WHEEL_MODE;
         }
 
+        void setMotorID(const uint8_t motor_id) const {
+            workbench::wb.changeID(id, motor_id);
+        }
+
+        void enableTorque() const {
+            workbench::wb.torqueOn(id);
+        }
+
+        void disableTorque() const {
+            workbench::wb.torqueOff(id);
+        }
 
         Motor() = default;
 
