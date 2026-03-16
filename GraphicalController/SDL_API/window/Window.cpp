@@ -2,7 +2,7 @@
 
 #include "../types/vec2.hpp"
 
-#ifdef __cplusplus
+#ifdef __APPLE__
 #include "external/glad4/glad/glad.h"
 #else
 #include "external/glad_es/glad/glad.h"
@@ -48,13 +48,12 @@ Window::Window(const char windowName[], dim2 dim, WindowProperty flags, bool Ope
 
     gl_context = SDL_GL_CreateContext(sdl_window);
 
-    #ifdef __cplusplus
+    #ifdef __APPLE__
     gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
     #else
     gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress);
     #endif
 
-    std::cout << glGetError() << std::endl;
 
     SDL_GL_MakeCurrent(sdl_window, gl_context);
     SDL_GL_SetSwapInterval(1);
