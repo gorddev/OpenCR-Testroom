@@ -2,7 +2,7 @@
 
 #include "../types/vec2.hpp"
 
-#ifdef __APPLE__
+#ifdef __cplusplus
 #include "external/glad4/glad/glad.h"
 #else
 #include "external/glad_es/glad/glad.h"
