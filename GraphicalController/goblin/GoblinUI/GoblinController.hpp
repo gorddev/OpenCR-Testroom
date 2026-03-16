@@ -57,7 +57,7 @@ namespace goblin {
             ImGui::Checkbox("Enable/Disable Torque", &core.torque);
 
             // Allows us to
-            ImGui::Text("sdl window pos: %f, %f", window.getPosition().x, window.getPosition().y);
+            //ImGui::Text("sdl window pos: %f, %f", window.getPosition().x, window.getPosition().y);
 
         }
 
