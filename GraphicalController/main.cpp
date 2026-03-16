@@ -32,6 +32,11 @@ int main() {
         if (!s.empty()) {
             std::cerr << s << std::endl;
         }
+        auto err = glGetError();
+        if (err != GL_NO_ERROR) {
+            std::cerr <<"gler: " << err << std::endl;
+        }
+
 
         // 2. render the controller
         controller.display();
