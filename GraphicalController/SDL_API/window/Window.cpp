@@ -54,6 +54,8 @@ Window::Window(const char windowName[], dim2 dim, WindowProperty flags, bool Ope
     gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress);
     #endif
 
+    std::cout << glGetError() << std::endl;
+
     SDL_GL_MakeCurrent(sdl_window, gl_context);
     SDL_GL_SetSwapInterval(1);
 }

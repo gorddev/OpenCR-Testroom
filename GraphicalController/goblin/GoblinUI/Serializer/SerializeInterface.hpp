@@ -21,7 +21,7 @@ namespace goblin {
             std::string writing("serial > ::");
             writing += port;
 
-            ImGui::Text(writing.c_str());
+            ImGui::Text("%s", writing.c_str());
             const bool new_line = ImGui::InputText("##serialize_button",
                 serial.data(), serial.length(), ImGuiInputTextFlags_EnterReturnsTrue);
 

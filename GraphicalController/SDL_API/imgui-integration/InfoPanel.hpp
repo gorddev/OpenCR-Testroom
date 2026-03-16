@@ -4,7 +4,7 @@
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_opengl3.h>
 
-#ifdef __APPLE__
+#ifdef __cplusplus
 #include "external/glad4/glad/glad.h"
 #else
 #include "external/glad_es/glad/glad.h"

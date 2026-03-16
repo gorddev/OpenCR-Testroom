@@ -98,21 +98,23 @@ target_include_directories(Serial PRIVATE
 #########################
 # Glad Compilation
 #########################
-if(NOT APPLE)
-add_library(GLAD STATIC
-    ${CMAKE_SOURCE_DIR}/external/glad_es/glad/glad.c
-)
-target_include_directories(GLAD PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/glad_es
-)
-else()
+
 add_library(GLAD STATIC
     ${CMAKE_SOURCE_DIR}/external/glad4/glad/glad.c
 )
 target_include_directories(GLAD PRIVATE
     ${CMAKE_SOURCE_DIR}/external/glad4
 )
-endif()
+
+#[[
+elseif(UNIX)
+add_library(GLAD STATIC
+    ${CMAKE_SOURCE_DIR}/external/glad_es/glad/glad.c
+)
+target_include_directories(GLAD PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/glad_es
+)
+endif()#]]
 
 
 
@@ -141,7 +143,11 @@ target_link_libraries(GraphicalController
 )
 
 
-if(APPLE)
+target_include_directories(GraphicalController PRIVATE
+    ${CMAKE_SOURCE_DIR}/external/glad4
+)
+#[[
+if(UNIX)
     target_include_directories(GraphicalController PRIVATE
         ${CMAKE_SOURCE_DIR}/external/glad4
     )
@@ -149,4 +155,4 @@ else()
     target_include_directories(GraphicalController PRIVATE
         ${CMAKE_SOURCE_DIR}/external/glad_es
     )
-endif ()
+endif ()#]]
