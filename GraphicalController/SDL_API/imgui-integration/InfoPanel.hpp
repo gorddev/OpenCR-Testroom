@@ -36,6 +36,7 @@ namespace gan {
             std::cerr << glGetString(GL_VERSION) << std::endl;
             ImGui_ImplOpenGL3_Init("#version 300 es");
             #endif
+            std::cerr << glGetString(GL_VERSION) << std::endl;
         }
 
         void handleEvent(const SDL_Event &event) {

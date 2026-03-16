@@ -24,6 +24,7 @@ int main() {
         // 1. Process Events
         while (SDL_PollEvent(&e)) {
             controller.handleEvent(e);
+            std::cerr << "polling event" << std::endl;
             if (e.type == SDL_EVENT_QUIT) running = false;
         }
 
