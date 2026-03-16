@@ -19,9 +19,10 @@ namespace gan {
 
     public:
         explicit InfoPanel(const char windowName[]) : imgui_context(ImGui::CreateContext()),
-            window(windowName, {500, 500}, gan::WindowTransparent),
+            window(windowName, {500, 500}, WindowTransparent),
             sdl_renderer(SDL_CreateRenderer(window, "software"))
         {
+            SDL_SetWindowResizable(window, false);
             SDL_SetRenderVSync(sdl_renderer, true);
             ImGui_ImplSDL3_InitForSDLRenderer(window, sdl_renderer);
             ImGui_ImplSDLRenderer3_Init(sdl_renderer);
