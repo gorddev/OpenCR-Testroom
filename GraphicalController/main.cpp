@@ -7,6 +7,7 @@
 
 
 int main() {
+    SDL_Init(SDL_INIT_VIDEO);
     std::cout << "Hello, World!" << std::endl;
 
     SDL_Event e;
@@ -36,6 +37,7 @@ int main() {
         if (err != GL_NO_ERROR) {
             std::cerr <<"gler: " << err << std::endl;
         }
+        printf("Video driver: %s\n", SDL_GetCurrentVideoDriver());
 
 
         // 2. render the controller
