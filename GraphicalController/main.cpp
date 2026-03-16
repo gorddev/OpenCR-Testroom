@@ -28,6 +28,11 @@ int main() {
             if (e.type == SDL_EVENT_QUIT) running = false;
         }
 
+        std::string s = SDL_GetError();
+        if (!s.empty()) {
+            std::cerr << s << std::endl;
+        }
+
         // 2. render the controller
         controller.display();
     }
