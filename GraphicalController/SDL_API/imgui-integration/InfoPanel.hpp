@@ -33,6 +33,7 @@ namespace gan {
             #ifdef __APPLE__
             ImGui_ImplOpenGL3_Init("#version 410 core");
             #else
+            std::cerr << glGetString(GL_VERSION) << std::endl;
             ImGui_ImplOpenGL3_Init("#version 300 es");
             #endif
         }
