@@ -105,9 +105,6 @@ add_library(GLAD STATIC
 target_include_directories(GLAD PRIVATE
     ${CMAKE_SOURCE_DIR}/external/glad_es
 )
-target_include_directories(GraphicalController PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/glad_es
-)
 else()
 add_library(GLAD STATIC
     ${CMAKE_SOURCE_DIR}/external/glad4/glad/glad.c
