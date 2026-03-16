@@ -2,6 +2,8 @@
 
 #include <DynamixelWorkbench.h>
 
+#include "Invariants.h"
+
 #define BAUDRATE  1000000
 #define DEVICE_NAME ""
 
@@ -29,11 +31,6 @@ namespace dxl {
             CR_STATUS(status_num++, msg);
             if (newline) { CR_PRINT("\n"); }
         }
-    }
-
-    namespace invar {
-        const int32_t vel_max = 330;
-        const int max_motor_id = 12;
     }
 
     namespace internal {
