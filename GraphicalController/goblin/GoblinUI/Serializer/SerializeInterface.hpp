@@ -18,8 +18,8 @@ namespace goblin {
 
         bool button(gan::fstring<buf_size>& serial, const char port[] = "") {
             // Serialization
-            gan::fstring<50> writing("serial > ::");
-            writing << port;
+            std::string writing("serial > ::");
+            writing += port;
 
             ImGui::Text(writing.c_str());
             const bool new_line = ImGui::InputText("##serialize_button",

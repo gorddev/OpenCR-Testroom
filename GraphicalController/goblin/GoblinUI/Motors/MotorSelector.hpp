@@ -99,7 +99,7 @@ namespace goblin {
 
         static void display_motor_stats(Motor motors[], uint8_t num_motors) {
 
-            ImGui::BeginTable("Motor Info", 2, ImGuiTableFlags_BordersInnerV | ImGuiTableFlags_SizingFixedFit);
+            ImGui::BeginTable("Motor Info", 2, ImGuiTableFlags_BordersInnerV);
 
             ImGui::TableSetupColumn("Motor");
             ImGui::TableSetupColumn("Status");
@@ -113,7 +113,7 @@ namespace goblin {
                 motor_info << motors[i].id << ": " << motors[i].model_id;
                 ImGui::Text("%s", motor_info.c_str());
                 ImGui::TableSetColumnIndex(1);
-                motor_status << "v: " << motors[i].vel << "\tp: " << motors[i].pos;
+                motor_status << "v: " << motors[i].vel << " p: ";// << motors[i].pos;
                 ImGui::Text("%s", motor_status.c_str());
 
                 motor_info.clear();

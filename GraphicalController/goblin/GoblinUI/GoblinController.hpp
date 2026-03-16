@@ -31,7 +31,8 @@ namespace goblin {
 
         void display() {
 
-            beginInfoPanel("Goblin Control Panel");
+            if (!beginInfoPanel("Goblin Control Panel", {260, 400}))
+                return;
 
             // render each button
             render_buttons();
@@ -43,6 +44,7 @@ namespace goblin {
     private:
 
         void render_buttons() {
+
 
             if (serializer_ui.button(core.serial, GoblinCore::port)) {
                 ImGui::SetKeyboardFocusHere(-1);
@@ -57,7 +59,7 @@ namespace goblin {
             ImGui::Checkbox("Enable/Disable Torque", &core.torque);
 
             // Allows us to
-            //ImGui::Text("sdl window pos: %f, %f", window.getPosition().x, window.getPosition().y);
+            ImGui::Text("sdl window pos: %i, %i", (int)window.getPosition().x, (int)window.getPosition().y);
 
         }
 

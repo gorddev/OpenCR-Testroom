@@ -16,10 +16,12 @@ namespace gan {
         ImGuiContext* imgui_context;
         gan::Window window;
         SDL_Renderer* sdl_renderer;
+        dim2 sizeReq;
+        bool validFrame = false;
 
     public:
-        explicit InfoPanel(const char windowName[]) : imgui_context(ImGui::CreateContext()),
-            window(windowName, {500, 500}, WindowTransparent),
+        explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
+            window(windowName, {750, 500}, WindowTransparent | prop),
             sdl_renderer(SDL_CreateRenderer(window, "software"))
         {
             SDL_SetWindowResizable(window, false);
@@ -38,14 +40,17 @@ namespace gan {
         }
 
         virtual ~InfoPanel() {
+            ImGui_ImplSDL3_Shutdown();
+            ImGui_ImplSDLRenderer3_Shutdown();
             ImGui::DestroyContext(imgui_context);
             SDL_DestroyRenderer(sdl_renderer);
+            SDL_DestroyWindow(window);
         }
 
     protected:
-        void beginInfoPanel(const char name[]) const {
+        [[nodiscard]] bool beginInfoPanel(const char name[], dim2 size) {
             if (window.isHidden())
-                return;
+                return false;
 
             ImGui::SetCurrentContext(imgui_context);
 
@@ -55,21 +60,26 @@ namespace gan {
             ImGui::NewFrame();
 
             setup_window();
-
-            ImGui::Begin(name, nullptr,
-                ImGuiWindowFlags_NoResize |
+            validFrame = ImGui::Begin(name, nullptr,
                 ImGuiWindowFlags_NoMove |
                 ImGuiWindowFlags_NoScrollbar |
-                ImGuiTableFlags_SizingFixedFit
+                ImGuiWindowFlags_NoResize
             );
 
+            if (!validFrame) {
+                endInfoPanel();
+            }
+
+            return validFrame;
+
             // make sure our window size is correct.
-            setup_window();
         }
 
         void endInfoPanel() const {
+            if (window.isHidden())
+                return;
             // resize according to window size.
-            resize_window();
+            resize_window(sizeReq);
 
             ImGui::End();
 
@@ -78,24 +88,18 @@ namespace gan {
 
     private:
         void setup_window() const {
-            gan::dim2 w_dim = window.getDimensions();
-            ImGui::SetNextWindowPos({0, 0}, ImGuiCond_Always);
-            ImGui::SetNextWindowSize({(float)w_dim.w, 0.0f}, ImGuiCond_Always);
+            ImGui::SetNextWindowPos({0,0}, ImGuiCond_Once);
+            ImGui::SetNextWindowSize(ImVec2(0,0), ImGuiCond_FirstUseEver);
         }
 
-        void resize_window() const {
+        void resize_window(const dim2& size) const {
             gan::dim2 w_dim = window.getDimensions();
-            const float content_height = ImGui::GetCursorPosY() + ImGui::GetStyle().WindowPadding.y;
-            const float content_width = ImGui::GetItemRectMax().x + ImGui::GetStyle().WindowPadding.x;
-
-            if (std::abs(content_height - w_dim.h) > 1) {
-                window.setDimensions({(int)content_width, (int)content_height});
+            auto im_size = ImGui::GetWindowSize();
+            if (std::abs((int)im_size.x -(int)w_dim.w) > 1 || std::abs((int)im_size.y - (int)w_dim.h) > 1) {
+                window.setDimensions({(int)im_size.x, (int)im_size.y});
             }
         }
 
-        void new_frame() const {
-
-        }
 
         void draw() const {
             ImGui::Render();

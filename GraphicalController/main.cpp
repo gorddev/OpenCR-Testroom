@@ -15,7 +15,7 @@ int main() {
     SDL_Event e;
 
 
-    const gan::Window window2("new din", {500,302}, gan::WindowResizable);
+    const gan::Window window2("new din", {500,400}, gan::WindowResizable);
 
     GoblinCore core;
 
