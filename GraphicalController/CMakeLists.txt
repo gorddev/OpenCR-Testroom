@@ -3,23 +3,27 @@ project(GraphicalController)
 
 set(CMAKE_CXX_STANDARD 20)
 
+
 # we have to include fetch content to we get repos from git
 include(FetchContent)
+find_package(SDL3)
 
 ####################
 # FetchContent Below
 ####################
 
-# ..........................
-#############################
-# SDL 3
-FetchContent_Declare(
-    SDL3
-    GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
-    GIT_TAG release-3.4.x
-)
-FetchContent_MakeAvailable(SDL3)
-#############################
+if(NOT SDL3_FOUND)
+    # ..........................
+    #############################
+    # SDL 3
+    FetchContent_Declare(
+        SDL3
+        GIT_REPOSITORY https://github.com/libsdl-org/SDL.git
+        GIT_TAG release-3.4.x
+    )
+    FetchContent_MakeAvailable(SDL3)
+    #############################
+endif()
 
 #############################
 # Dear ImGui
@@ -95,7 +99,7 @@ target_include_directories(Serial PRIVATE
 #########################
 add_executable(GraphicalController
     main.cpp
-    SDL_Api/window/Window.cpp
+    SDL_API/window/Window.cpp
 )
 
 target_include_directories(GraphicalController PRIVATE
