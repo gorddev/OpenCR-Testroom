@@ -2,6 +2,12 @@
 
 #include "../types/vec2.hpp"
 
+#ifdef __APPLE__
+#include "external/glad4/glad/glad.h"
+#else
+#include "external/glad_es/glad/glad.h"
+#endif
+
 #ifdef GAN_DEBUG
 #include <iostream>
 #include <ostream>
@@ -15,10 +21,41 @@ using namespace gan;
 
 Window::Window(const char windowName[], const dim2 dim, const WindowProperty flags)
     : sdl_window(SDL_CreateWindow(windowName, dim.w, dim.h, flags | SDL_WINDOW_OPENGL)),
-        flags(flags), dimensions(dim), id(SDL_GetWindowID(sdl_window))
+        flags(flags), dimensions(dim), id(m_id), m_id(SDL_GetWindowID(sdl_window)), gl_context(0)
 {
     if (!sdl_window)
         err::panic("Window::Window()", "Failed to make window with error: ",  SDL_GetError());
+}
+
+Window::Window(const char windowName[], dim2 dim, WindowProperty flags, bool OpenGL_ES)
+    : id(m_id), dimensions(dim){
+    #ifdef __APPLE__
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    #else
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
+    SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
+    #endif
+    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+
+    sdl_window = SDL_CreateWindow(windowName, dim.w, dim.h, flags | SDL_WINDOW_OPENGL);
+
+    if (!sdl_window)
+        err::panic("Window::Window()", "Failed to make window with error: ",  SDL_GetError());
+
+    gl_context = SDL_GL_CreateContext(sdl_window);
+
+    #ifdef __APPLE__
+    gladLoadGLLoader((GLADloadproc)SDL_GL_GetProcAddress);
+    #else
+    gladLoadGLES2Loader((GLADloadproc)SDL_GL_GetProcAddress);
+    #endif
+
+    SDL_GL_MakeCurrent(sdl_window, gl_context);
+    SDL_GL_SetSwapInterval(1);
 }
 
 Window::~Window() {
@@ -196,6 +233,10 @@ vec2 Window::getPosition() const noexcept {
 
 uint32_t Window::getWindowId() const noexcept {
     return id;
+}
+
+SDL_GLContext Window::getGlContext() const noexcept {
+    return gl_context;
 }
 
 void Window::on_resize(SDL_Event& e) noexcept {

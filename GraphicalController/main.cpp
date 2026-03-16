@@ -1,12 +1,9 @@
 #include <iostream>
 #include <SDL3/SDL.h>
-#include <imgui.h>
 
 #include "goblin/GoblinUI/GoblinController.hpp"
 #include "goblin/Goblin-Core/GoblinCore.hpp"
 #include "SDL_API/window/Window.hpp"
-#include "backends/imgui_impl_sdl3.h"
-#include "backends/imgui_impl_sdlrenderer3.h"
 
 
 int main() {

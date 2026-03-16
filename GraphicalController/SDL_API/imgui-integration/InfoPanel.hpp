@@ -4,6 +4,12 @@
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_opengl3.h>
 
+#ifdef __APPLE__
+#include "external/glad4/glad/glad.h"
+#else
+#include "external/glad_es/glad/glad.h"
+#endif
+
 #include "SDL_API/window/Window.hpp"
 
 /* Created by Gordie Novak on 3/16/26.
@@ -15,19 +21,20 @@ namespace gan {
     protected:
         ImGuiContext* imgui_context;
         gan::Window window;
-        SDL_Renderer* sdl_renderer;
         dim2 sizeReq;
         bool validFrame = false;
 
     public:
         explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
-            window(windowName, {750, 500}, WindowTransparent | prop),
-            sdl_renderer(SDL_CreateRenderer(window, "software"))
+            window(windowName, {750, 500}, WindowTransparent | prop, true)
         {
             SDL_SetWindowResizable(window, false);
-            SDL_SetRenderVSync(sdl_renderer, true);
-            ImGui_ImplSDL3_InitForSDLRenderer(window, sdl_renderer);
-            ImGui_ImplSDLRenderer3_Init(sdl_renderer);
+            ImGui_ImplSDL3_InitForOpenGL(window, window.getGlContext());
+            #ifdef __APPLE__
+            ImGui_ImplOpenGL3_Init("#version 410 core");
+            #else
+            ImGui_ImplOpenGL3_Init("#version 300 es");
+            #endif
         }
 
         void handleEvent(const SDL_Event &event) {
@@ -41,9 +48,8 @@ namespace gan {
 
         virtual ~InfoPanel() {
             ImGui_ImplSDL3_Shutdown();
-            ImGui_ImplSDLRenderer3_Shutdown();
+            ImGui_ImplOpenGL3_Shutdown();
             ImGui::DestroyContext(imgui_context);
-            SDL_DestroyRenderer(sdl_renderer);
             SDL_DestroyWindow(window);
         }
 
@@ -55,7 +61,7 @@ namespace gan {
             ImGui::SetCurrentContext(imgui_context);
 
             // Set up the new frames for each.
-            ImGui_ImplSDLRenderer3_NewFrame();
+            ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
 
@@ -103,9 +109,16 @@ namespace gan {
 
         void draw() const {
             ImGui::Render();
-            SDL_RenderClear(sdl_renderer);
-            ImGui_ImplSDLRenderer3_RenderDrawData(ImGui::GetDrawData(), sdl_renderer);
-            SDL_RenderPresent(sdl_renderer);
+
+            int w, h;
+            SDL_GetWindowSize(window, &w, &h);
+
+            glViewport(0, 0, w, h);
+            glClear(GL_COLOR_BUFFER_BIT);
+
+            ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+
+            SDL_GL_SwapWindow(window);
         }
 
     };

@@ -27,9 +27,13 @@ namespace gan {
         SDL_Window *sdl_window;
         /// Internal flags for keeping track of states
         WindowProperty flags;
+        /// Internal id of the window
+        uint32_t m_id;
+        /// GL context
+        SDL_GLContext gl_context;
     public:
         /// ID of the specific window
-        const uint32_t id;
+        const uint32_t& id;
     private:
         /// Internal Window dimensions
         dim2 dimensions;
@@ -40,6 +44,12 @@ namespace gan {
         /// @param dim The width and height of the window.
         /// @param flags Creates specific flags for the window.
         explicit Window(const char windowName[], dim2 dim, WindowProperty flags = WindowProperty());
+
+        /// Construct with a default width and height
+        /// @param windowName The name of the window you want to create
+        /// @param dim The width and height of the window.
+        /// @param flags Creates specific flags for the window.
+        explicit Window(const char windowName[], dim2 dim, WindowProperty flags, bool OpenGL);
 
         ~Window(); ///< Destructor
 
@@ -86,6 +96,7 @@ namespace gan {
         [[nodiscard]] uint32_t  getHeight() const noexcept;         ///< Returns the height of the current window (in pixels)
         [[nodiscard]] vec2      getPosition() const noexcept;       ///< Returns the position of the current window {x, y} (in pixels)
         [[nodiscard]] uint32_t  getWindowId() const noexcept;
+        [[nodiscard]] SDL_GLContext getGlContext() const noexcept;  ///< Returns GLContext object
 
         void on_resize(SDL_Event& e) noexcept;
 

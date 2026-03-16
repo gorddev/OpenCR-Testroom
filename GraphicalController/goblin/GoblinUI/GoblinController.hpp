@@ -1,10 +1,7 @@
 #pragma once
 
-#include <string>
-#include <utility>
+
 #include <imgui.h>
-#include <backends/imgui_impl_sdl3.h>
-#include <backends/imgui_impl_sdlrenderer3.h>
 
 #include "../Goblin-Core/GoblinCore.hpp"
 #include "imgui-integration/InfoPanel.hpp"
