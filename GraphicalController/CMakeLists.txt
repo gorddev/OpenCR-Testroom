@@ -3,7 +3,6 @@ project(GraphicalController)
 
 set(CMAKE_CXX_STANDARD 20)
 
-
 # we have to include fetch content to we get repos from git
 include(FetchContent)
 find_package(SDL3)
@@ -48,6 +47,7 @@ add_library(ImGui STATIC
     ${imgui_SOURCE_DIR}/imgui_widgets.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
 )
 
 target_include_directories(ImGui PRIVATE

@@ -15,8 +15,8 @@ using namespace gan;
 
 Window::Window(const char windowName[], const dim2 dim, const WindowProperty flags)
     : sdl_window(SDL_CreateWindow(windowName, dim.w, dim.h, flags | SDL_WINDOW_OPENGL)),
-        flags(flags), dimensions(dim), id(SDL_GetWindowID(sdl_window)) {
-
+        flags(flags), dimensions(dim), id(SDL_GetWindowID(sdl_window))
+{
     if (!sdl_window)
         err::panic("Window::Window()", "Failed to make window with error: ",  SDL_GetError());
 }
