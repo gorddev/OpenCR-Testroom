@@ -2,6 +2,7 @@
 
 #include "gan_log.hpp"
 #include <iostream>
+#include <optional>
 
 
 
