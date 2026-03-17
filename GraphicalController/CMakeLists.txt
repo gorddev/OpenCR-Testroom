@@ -3,6 +3,8 @@ project(GraphicalController)
 
 set(CMAKE_CXX_STANDARD 20)
 
+set(OpenGL_ES OFF)
+
 # we have to include fetch content to we get repos from git
 include(FetchContent)
 find_package(SDL3)
@@ -100,7 +102,8 @@ target_include_directories(Serial PRIVATE
 #########################
 
 
-if(APPLE)
+
+if(NOT OpenGL_ES)
 add_library(GLAD STATIC
     ${CMAKE_SOURCE_DIR}/external/glad4/glad/glad.c
 )

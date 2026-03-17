@@ -25,19 +25,18 @@ int main() {
         // 1. Process Events
         while (SDL_PollEvent(&e)) {
             controller.handleEvent(e);
-            std::cerr << "polling event" << std::endl;
             if (e.type == SDL_EVENT_QUIT) running = false;
         }
 
         std::string s = SDL_GetError();
         if (!s.empty()) {
             std::cerr << s << std::endl;
+            SDL_ClearError();
         }
         auto err = glGetError();
         if (err != GL_NO_ERROR) {
             std::cerr <<"gler: " << err << std::endl;
         }
-        printf("Video driver: %s\n", SDL_GetCurrentVideoDriver());
 
 
         // 2. render the controller
