@@ -22,7 +22,6 @@ namespace gan {
         ImGuiContext* imgui_context;
         gan::Window window;
         dim2 sizeReq;
-        bool validFrame = false;
 
     public:
         explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
@@ -68,19 +67,12 @@ namespace gan {
             ImGui::NewFrame();
 
             setup_window();
-            validFrame = ImGui::Begin(name, nullptr,
+
+            return (ImGui::Begin(name, nullptr,
                 ImGuiWindowFlags_NoMove |
                 ImGuiWindowFlags_NoScrollbar |
                 ImGuiWindowFlags_NoResize
-            );
-
-            if (!validFrame) {
-                endInfoPanel();
-            }
-
-            return validFrame;
-
-            // make sure our window size is correct.
+            ));
         }
 
         void endInfoPanel() const {
@@ -97,7 +89,7 @@ namespace gan {
     private:
         void setup_window() const {
             ImGui::SetNextWindowPos({0,0}, ImGuiCond_Once);
-            ImGui::SetNextWindowSize(ImVec2(0,0), ImGuiCond_FirstUseEver);
+            ImGui::SetNextWindowSize(ImVec2(300,200), ImGuiCond_FirstUseEver);
         }
 
         void resize_window(const dim2& size) const {
@@ -110,6 +102,8 @@ namespace gan {
 
 
         void draw() const {
+            SDL_GL_MakeCurrent(window, window.getGlContext());
+            ImGui::SetCurrentContext(imgui_context);
             ImGui::Render();
 
             int w, h;

@@ -145,6 +145,19 @@ target_link_libraries(GraphicalController
     GLAD
 )
 
+
+if(NOT OpenGL_ES)
+    target_compile_options(GraphicalController PRIVATE
+        -O3
+        -DOpenGL_Core
+    )
+else()
+    target_compile_options(GraphicalController PRIVATE
+        -DOpenGL_ES
+    )
+endif()
+
+
 if(APPLE)
     target_include_directories(GraphicalController PRIVATE
         ${CMAKE_SOURCE_DIR}/external/glad4

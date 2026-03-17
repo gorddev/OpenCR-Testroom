@@ -28,11 +28,8 @@ namespace goblin {
 
         void display() {
 
-            if (!beginInfoPanel("Goblin Control Panel", {260, 400}))
-                return;
-
-            // render each button
-            render_buttons();
+            if (beginInfoPanel("Goblin Control Panel", {260, 400}))
+                render_buttons();
 
             endInfoPanel();
         }
