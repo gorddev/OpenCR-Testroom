@@ -93,9 +93,10 @@ namespace gan {
         }
 
         void resize_window(const dim2& size) const {
-            gan::dim2 w_dim = window.getDimensions();
+            int w, h;
+            SDL_GetWindowSizeInPixels(window, &w, &h);
             auto im_size = ImGui::GetWindowSize();
-            if (std::abs((int)im_size.x -(int)w_dim.w) > 1 || std::abs((int)im_size.y - (int)w_dim.h) > 1) {
+            if (std::abs((int)im_size.x -(int)w) > 1 || std::abs((int)im_size.y - (int)h) > 1) {
                 window.setDimensions({(int)im_size.x, (int)im_size.y});
             }
         }
