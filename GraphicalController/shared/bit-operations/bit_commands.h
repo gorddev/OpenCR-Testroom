@@ -1,7 +1,6 @@
 #pragma once
 
 #include <type_traits>
-#include <__ranges/data.h>
 
 #include "bit_array.h"
 

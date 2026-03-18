@@ -17,10 +17,11 @@
 
 
 namespace gobin {
+    static char port[] = "/dev/tty.debug-console";
     struct GoblinBrain {
 
         static constexpr uint32_t   buf_size = 300;
-        static constexpr char       port[] = "/dev/tty.debug-console";
+
         static constexpr uint64_t   baudrate = 1000000;
         static constexpr uint8_t    max_motors = 4;
 
