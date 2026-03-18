@@ -25,7 +25,7 @@ namespace gan {
 
     public:
         explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
-            window(windowName, {750, 500}, WindowTransparent | prop, true)
+             window(gan::Window::makeGL(windowName, {300, 300}, gan::WindowFloatOnTop))
         {
             SDL_SetWindowResizable(window, false);
             ImGui_ImplSDL3_InitForOpenGL(window, window.getGlContext());

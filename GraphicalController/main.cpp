@@ -1,5 +1,5 @@
-#include <iostream>
-#include <SDL3/SDL.h>
+
+#include "SDL_API/SDL_API.h"
 
 #include "goblin/GoblinUI/GoblinController.hpp"
 #include "goblin/Goblin-Core/GoblinBrain.hpp"
@@ -7,17 +7,31 @@
 
 
 int main() {
-    SDL_Init(SDL_INIT_VIDEO);
+
     std::cout << "Hello, World!" << std::endl;
 
-    SDL_Event e;
-
+    std::cout << "Enter the entry port:\n> ";
+    std::string input;
+    std::getline(std::cin, input);
+    std::cout << "got port: " << input << std::endl;
+    gobin::port = input;
 
     //const gan::Window window2("new din", {500,400}, gan::WindowResizable);
 
-    gobin::GoblinBrain core;
+    gobin::GoblinBrain* core;
+    try {
+        core = (new gobin::GoblinBrain());
+    } catch (int) {
+        std::cerr << "Could not open the port provided at " << gobin::port << std::endl;
+        return 1;
+    }
 
-    gobin::GoblinController controller("Goblin Goblin", core);
+    SDL_Init(SDL_INIT_VIDEO);
+
+    gobin::GoblinController controller("Goblin Goblin", *core);
+
+
+    SDL_Event e;
 
 
     bool running = true;
@@ -28,12 +42,14 @@ int main() {
             if (e.type == SDL_EVENT_QUIT) running = false;
         }
 
-        core.update();
+        core->update();
 
 
         // 2. render the controller
         controller.display();
     }
+
+    delete core;
 
     return 0;
 }

@@ -42,7 +42,7 @@ namespace gobin {
 
             gan::fstring<300> str_serial;
             str_serial.resize<300>();
-            if (serializer_ui.button(str_serial, port)) {
+            if (serializer_ui.button(str_serial, port.c_str())) {
                 ImGui::SetKeyboardFocusHere(-1);
                 size_t len = strlen(str_serial.data());
                 serializer_ui.last_byte_count = len;

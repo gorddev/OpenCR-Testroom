@@ -126,23 +126,24 @@ endif()
 #########################
 add_executable(GraphicalController
     main.cpp
-    SDL_API/window/Window.cpp
 )
 
 target_include_directories(GraphicalController PRIVATE
     ${imgui_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}/external/serial/include
-    ${CMAKE_SOURCE_DIR}/SDL_API
     ${CMAKE_SOURCE_DIR}/goblin
     ${CMAKE_SOURCE_DIR}/external
+    ${CMAKE_SOURCE_DIR}/SDL_API
     ${CMAKE_SOURCE_DIR}
 )
+
+add_subdirectory(SDL_API)
 
 target_link_libraries(GraphicalController
     SDL3::SDL3
     ImGui
     Serial
-    GLAD
+    SDL_API
 )
 
 

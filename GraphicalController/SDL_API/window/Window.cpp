@@ -2,7 +2,7 @@
 
 #include "../types/vec2.hpp"
 
-#include <OpenGL.h>
+#include "../apidef.h"
 
 #ifdef GAN_DEBUG
 #include <iostream>
@@ -16,21 +16,39 @@
 
 using namespace gan;
 
-Window::Window(const char windowName[], const dim2 dim, const WindowProperty flags)
-    : sdl_window(SDL_CreateWindow(windowName, dim.w, dim.h, flags | SDL_WINDOW_OPENGL)),
-        flags(flags), dimensions(dim), id(m_id), m_id(SDL_GetWindowID(sdl_window)), gl_context(0)
+Window::Window(SDL_Window* win, WindowProperty flags, const SDL_WindowID id, SDL_GLContext gl, dim2 dim)
+    : sdl_window(win), flags(flags), id(id), gl_context(gl), dimensions(dim) {}
+
+
+Window Window::make(const char windowName[], const dim2 dim, const WindowProperty flags)
 {
-    if (!sdl_window)
+    ensure_SDL_init();
+
+    SDL_Window* sdl_window = SDL_CreateWindow(windowName, static_cast<int>(dim.w), static_cast<int>(dim.h), flags);
+
+    if (!sdl_window) {
         err::panic("Window::Window()", "Failed to make window with error: ",  SDL_GetError());
+    }
+
+    return Window{
+        sdl_window,
+        flags,
+        SDL_GetWindowID(sdl_window),
+        nullptr,
+        dim
+    };
 }
 
-Window::Window(const char windowName[], dim2 dim, WindowProperty flags, bool OpenGL_ES)
-    : id(m_id), dimensions(dim){
-    #ifdef __APPLE__
+Window Window::makeGL(const char windowName[], dim2 dim, WindowProperty flags)
+{
+    ensure_SDL_init();
+
+    #ifdef SDL_API_OpenGL_Core
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 4);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 1);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_CORE);
-    SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, SDL_GL_CONTEXT_FORWARD_COMPATIBLE_FLAG);
+    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+    std::cerr << "OpenGL Core!" << std::endl;
     #else
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 0);
@@ -38,20 +56,33 @@ Window::Window(const char windowName[], dim2 dim, WindowProperty flags, bool Ope
     #endif
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 
-    sdl_window = SDL_CreateWindow(windowName, dim.w, dim.h, flags | SDL_WINDOW_OPENGL);
+    SDL_Window* sdl_window = SDL_CreateWindow(windowName, dim.w, dim.h, flags | SDL_WINDOW_OPENGL);
 
-    if (!sdl_window)
+    if (!sdl_window) {
         err::panic("Window::Window()", "Failed to make window with error: ",  SDL_GetError());
+    }
 
-    gl_context = SDL_GL_CreateContext(sdl_window);
+    SDL_GLContext gl_context = SDL_GL_CreateContext(sdl_window);
 
     if (!gl_context)
-        err::panic("Window::Window()", "Failed to make gl_context with error: ",  SDL_GetError());
+        err::panic("Window::Window()", "Failed to make OpenGL context with error: ",  SDL_GetError());
 
     GAN_gladLoadGL((GLADloadproc)SDL_GL_GetProcAddress);
 
+    printf("OpenGL Context Initialized: %s\n", reinterpret_cast<const char*>(glGetString(GL_RENDERER)));
+
+    SDL_ClearError();
+
     SDL_GL_MakeCurrent(sdl_window, gl_context);
     SDL_GL_SetSwapInterval(1);
+
+    return Window {
+        sdl_window,
+        flags,
+        SDL_GetWindowID(sdl_window),
+        gl_context,
+        dim
+    };
 }
 
 Window::~Window() {

@@ -2,7 +2,6 @@
 #include <cstdint>
 
 #include "Motor.hpp"
-#include <types/fstring.hpp>
 
 #include "errors/gan_err.hpp"
 #include "serial/serial.h"
@@ -17,7 +16,7 @@
 
 
 namespace gobin {
-    static char port[] = "/dev/tty.debug-console";
+    inline std::string port = "/dev/tty.debug-console";
     struct GoblinBrain {
 
         static constexpr uint32_t   buf_size = 300;
@@ -33,7 +32,7 @@ namespace gobin {
         bool torque = true;         ///< If torque is enabled or not
 
     public:
-        GoblinBrain() : serial(port, baudrate) {}
+        GoblinBrain() : serial(port.c_str(), baudrate) {}
 
         void update() {
             serial.update();

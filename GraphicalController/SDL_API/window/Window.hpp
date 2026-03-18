@@ -5,6 +5,7 @@
  */
 #pragma once
 
+#include <optional>
 #include <utility>
 #include <SDL3/SDL_video.h>
 
@@ -27,29 +28,33 @@ namespace gan {
         SDL_Window *sdl_window;
         /// Internal flags for keeping track of states
         WindowProperty flags;
+    public:
         /// Internal id of the window
-        uint32_t m_id;
+        const SDL_WindowID id;
+    private:
         /// GL context
         SDL_GLContext gl_context;
-    public:
-        /// ID of the specific window
-        const uint32_t& id;
-    private:
         /// Internal Window dimensions
         dim2 dimensions;
+
+        Window(SDL_Window*, WindowProperty, SDL_WindowID, SDL_GLContext, dim2);
+
     public:
-
         /// Construct with a default width and height
         /// @param windowName The name of the window you want to create
         /// @param dim The width and height of the window.
         /// @param flags Creates specific flags for the window.
-        explicit Window(const char windowName[], dim2 dim, WindowProperty flags = WindowProperty());
+        /// @return The Window if successful. @code std::nullopt@endcode otherwise. Call @code GAN_GetError()@endcode
+        /// for error information.
+        static Window make(const char windowName[], dim2 dim, WindowProperty flags);
 
-        /// Construct with a default width and height
+        /// Construct with a default width and height with a GL context attatched.
         /// @param windowName The name of the window you want to create
         /// @param dim The width and height of the window.
         /// @param flags Creates specific flags for the window.
-        explicit Window(const char windowName[], dim2 dim, WindowProperty flags, bool OpenGL);
+        /// @return The Window if successful. @code std::nullopt@endcode otherwise. Call @code GAN_GetError()@endcode
+        /// for error information.
+        static Window makeGL(const char windowName[], dim2 dim, WindowProperty flags);
 
         ~Window(); ///< Destructor
 
@@ -101,12 +106,6 @@ namespace gan {
         void on_resize(SDL_Event& e) noexcept;
 
         void normalizeMousePosToWindow(float &x, float &y) const; ///< Gives mouse position in NDC (-1 to 1)
-
-        // Ensure Immovability.
-        Window operator=(const Window&) = delete;   ///< Nope. You can't use this.
-        Window operator=(Window&&) = delete;        ///< Nope. You can't use this.
-        Window(const Window&) = delete;             ///< Nope. You can't use this.
-        Window(Window&&) = delete;                  ///< Nope. You can't use this.
 
         operator SDL_Window* () const noexcept; // NOLINT(*-explicit-constructor)
     };
