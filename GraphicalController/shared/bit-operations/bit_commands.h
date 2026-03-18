@@ -117,11 +117,11 @@ namespace gobin {
         template<typename T>
             requires(std::is_aggregate_v<T>)
         void bitread(const void* data, T* obj) {
-            std::memcpy(obj, data, sizeof(T));
+            memcpy(obj, data, sizeof(T));
         }
 
         inline void bitread(const void* data, void* buffer, size_t num_bits) {
-            std::memmove(buffer, data, num_bits);
+            memmove(buffer, data, num_bits);
         }
 
         inline std::string strread(const void* data) {
