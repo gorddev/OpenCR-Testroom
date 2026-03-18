@@ -148,7 +148,6 @@ target_link_libraries(GraphicalController
 
 if(NOT OpenGL_ES)
     target_compile_options(GraphicalController PRIVATE
-        -O3
         -DOpenGL_Core
     )
 else()

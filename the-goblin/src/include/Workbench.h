@@ -1,14 +1,18 @@
 #pragma once
 
 #include <DynamixelWorkbench.h>
-
+#include "../serialization/command.h"
 #include "Invariants.h"
+#include "CRError.hpp"
 
 #define BAUDRATE  1000000
 #define DEVICE_NAME ""
 
 // printing & error macros
-#define CR_PRINT(msg) Serial.print(msg);
+#define CR_PRINT(msg) \
+    auto data = gobin::bitcast(msg); \
+    Serial.write(data.bits, data.size());
+
 #define CR_STATUS(s, msg) Serial.print("["); Serial.print(s); Serial.print("]\t"); Serial.print(msg);
 #define CR_PANIC(msg) Serial.print("\n----------> ["); Serial.print(__func__); Serial.print("()]\n!!Panic!! : " msg);
 #define CR_EXIT Serial.print("\n-----------\n~exit~ ...\n"); while(true)

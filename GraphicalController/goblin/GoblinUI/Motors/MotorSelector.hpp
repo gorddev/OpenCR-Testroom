@@ -12,7 +12,7 @@
  * Purpose: 
  */
 
-namespace goblin {
+namespace gobin {
 
     struct MotorSelector {
         bool all = true;    //< if all motors are enabled.

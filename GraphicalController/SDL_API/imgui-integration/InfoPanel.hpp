@@ -96,7 +96,7 @@ namespace gan {
             int w, h;
             SDL_GetWindowSizeInPixels(window, &w, &h);
             auto im_size = ImGui::GetWindowSize();
-            if (std::abs((int)im_size.x -(int)w) > 1 || std::abs((int)im_size.y - (int)h) > 1) {
+            if (std::abs((int)im_size.x -(int)w) > 1) {
                 window.setDimensions({(int)im_size.x, (int)im_size.y});
             }
         }

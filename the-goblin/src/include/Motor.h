@@ -27,8 +27,8 @@ namespace dxl {
                 velocity = -invar::vel_max;
 
             if (!workbench::wb.goalVelocity(id, velocity)) {
-                CR_PANIC("Failed to set velocity mode for motor ");
-                CR_PRINT(id); CR_EXIT;
+                CR_PANIC("Failed to set velocity mode for motor.");
+                CR_EXIT;
             }
         }
 
@@ -45,8 +45,8 @@ namespace dxl {
         void setPosition(int32_t position) const {
             if (mode == JOINT_MODE) {
                 if (!workbench::wb.goalPosition(id, position)) {
-                    CR_PANIC("Failed to set position mode for motor ");
-                    CR_PRINT(id); CR_EXIT;
+                    CR_PANIC("Failed to set position mode for motor.");
+                    CR_EXIT;
                 }
             } else {
                 workbench::success("Warning: Cannot set position as motor is not in joint mode.");
@@ -159,7 +159,7 @@ namespace dxl {
                     return motorArr[i];
                 }
             }
-            CR_PANIC("Motor "); CR_PRINT(motor_id); CR_PRINT(" doesn't exist. Please call motors.findMotors() first.");
+            CR_PANIC("Motor doesn't exist. Please call motors.findMotors() first.");
             CR_EXIT;
         }
 

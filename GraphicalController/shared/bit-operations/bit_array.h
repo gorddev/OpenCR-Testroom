@@ -4,7 +4,7 @@
  * Purpose: 
  * Just a simple bit array*/
 
-namespace goblin {
+namespace gobin {
     // just an array with a predefined size
     template<unsigned int s>
     struct bit_array {
@@ -24,8 +24,16 @@ namespace goblin {
         }
 
         template<typename T>
-        void write(T* src, unsigned int index = 0) {
+        void write_obj(T* src, unsigned int index = 0) {
             *reinterpret_cast<T*>(bits + index) = *src;
+        }
+
+        void write_mem(const void* src, size_t index, size_t num_bits) {
+            std::memcpy(bits + index, src, num_bits);
+        }
+
+        void write_byte(uint8_t byte, size_t index) {
+            bits[index] = byte;
         }
     };
 

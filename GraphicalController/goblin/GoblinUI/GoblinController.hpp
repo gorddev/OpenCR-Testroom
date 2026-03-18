@@ -3,7 +3,7 @@
 
 #include <imgui.h>
 
-#include "../Goblin-Core/GoblinCore.hpp"
+#include "../Goblin-Core/GoblinBrain.hpp"
 #include "imgui-integration/InfoPanel.hpp"
 #include "Motors/MotorSelector.hpp"
 #include "Serializer/SerializeInterface.hpp"
@@ -13,15 +13,15 @@
  * Purpose: 
  */
 
-namespace goblin {
+namespace gobin {
     struct GoblinController : gan::InfoPanel {
 
-        GoblinCore& core;
+        GoblinBrain& core;
 
-        SerializeInterface<GoblinCore::buf_size> serializer_ui;
+        SerializeInterface<GoblinBrain::buf_size> serializer_ui;
         MotorSelector motor_ui;
 
-        explicit GoblinController(const char windowName[], GoblinCore& core)
+        explicit GoblinController(const char windowName[], GoblinBrain& core)
             : InfoPanel("Gobin"),
                 core(core) { }
 
@@ -40,17 +40,21 @@ namespace goblin {
         void render_buttons() {
 
 
-            if (serializer_ui.button(core.serial, GoblinCore::port)) {
+            gan::fstring<300> str_serial;
+            str_serial.resize<300>();
+            if (serializer_ui.button(str_serial, GoblinBrain::port)) {
                 ImGui::SetKeyboardFocusHere(-1);
-                serializer_ui.last_byte_count = core.send_serial();
+                size_t len = strlen(str_serial.data());
+                serializer_ui.last_byte_count = len;
+                core.send_serial((uint8_t*)str_serial.data(), len);
             }
             ImGui::Separator();
 
             // Velocity Slider
-            motor_ui.button(core.motors, core.num_motors);
+            //motor_ui.button(core.motors, core.max_motors);
 
             // Checkbox
-            ImGui::Checkbox("Enable/Disable Torque", &core.torque);
+            //ImGui::Checkbox("Enable/Disable Torque", &core.torque);
 
             // Allows us to
             ImGui::Text("sdl window pos: %i, %i", (int)window.getPosition().x, (int)window.getPosition().y);

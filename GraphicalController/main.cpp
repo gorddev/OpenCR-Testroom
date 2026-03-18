@@ -2,7 +2,7 @@
 #include <SDL3/SDL.h>
 
 #include "goblin/GoblinUI/GoblinController.hpp"
-#include "goblin/Goblin-Core/GoblinCore.hpp"
+#include "goblin/Goblin-Core/GoblinBrain.hpp"
 #include "SDL_API/window/Window.hpp"
 
 
@@ -13,11 +13,11 @@ int main() {
     SDL_Event e;
 
 
-    const gan::Window window2("new din", {500,400}, gan::WindowResizable);
+    //const gan::Window window2("new din", {500,400}, gan::WindowResizable);
 
-    GoblinCore core;
+    gobin::GoblinBrain core;
 
-    goblin::GoblinController controller("Goblin Goblin", core);
+    gobin::GoblinController controller("Goblin Goblin", core);
 
 
     bool running = true;
@@ -28,15 +28,7 @@ int main() {
             if (e.type == SDL_EVENT_QUIT) running = false;
         }
 
-        std::string s = SDL_GetError();
-        if (!s.empty()) {
-            std::cerr << s << std::endl;
-            SDL_ClearError();
-        }
-        auto err = glGetError();
-        if (err != GL_NO_ERROR) {
-            std::cerr <<"gler: " << err << std::endl;
-        }
+        core.update();
 
 
         // 2. render the controller

@@ -2,7 +2,7 @@
 #include <cstdint>
 
 /* Created by Gordie Novak on 3/15/26.
- * Purpose: 
+ * Purpose:
  */
 
 namespace invar {

@@ -9,7 +9,7 @@
  * Purpose: 
  */
 
-namespace goblin {
+namespace gobin {
 
     struct MotorVelocitySlider {
         float acceleration = 0.f;

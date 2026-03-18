@@ -8,7 +8,7 @@
  * Purpose: 
  */
 
-namespace goblin {
+namespace gobin {
 
     template<size_t buf_size>
     struct SerializeInterface {
