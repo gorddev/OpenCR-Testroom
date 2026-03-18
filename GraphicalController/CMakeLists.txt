@@ -74,7 +74,7 @@ if(APPLE)
         ${CMAKE_SOURCE_DIR}/external/serial/src/impl/unix.cc
         ${CMAKE_SOURCE_DIR}/external/serial/src/impl/list_ports/list_ports_osx.cc
     )
-elseif()
+elseif(WIN32)
     message("Compiling serial library for windows")
     add_library(Serial STATIC
         ${CMAKE_SOURCE_DIR}/external/serial/src/serial.cc
