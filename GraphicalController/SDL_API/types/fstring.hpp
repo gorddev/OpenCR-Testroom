@@ -2,6 +2,7 @@
 
 #include <concepts>
 #include <cstring>
+#include <memory>
 
 // str_subview definition below
 

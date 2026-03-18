@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 /* Created by Gordie Novak on 3/16/26.
  * Purpose: 
  * Just a simple bit array*/

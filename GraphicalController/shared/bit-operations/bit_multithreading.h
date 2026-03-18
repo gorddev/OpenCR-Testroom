@@ -1,6 +1,6 @@
 #pragma once
 #include <thread>
-
+#include <memory>
 #include "serial/serial.h"
 
 /* Created by Gordie Novak on 3/16/26.

@@ -4,6 +4,7 @@
  * Purpose: 
  */
 
+#include<memory>
 #include <bitset>
 #include <array>
 #include <cstddef>

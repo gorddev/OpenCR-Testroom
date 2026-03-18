@@ -1,6 +1,6 @@
 #pragma once
 #include <iostream>
-
+#include <memory>
 #include "bit-operations/bit_buffer_c.hpp"
 #include "bit-operations/bit_commands.h"
 #include "errors/gan_err.hpp"
