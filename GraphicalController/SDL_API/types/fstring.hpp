@@ -23,7 +23,7 @@ namespace gan {
         template<uint32_t N>
         bool operator==(const char (&str)[N]) const {
             if (len != N - 1) return false;
-            return std::memcmp(data, str, len) == 0;
+            return memcmp(data, str, len) == 0;
         }
 
         bool operator==(const char* str) const {
@@ -35,7 +35,7 @@ namespace gan {
 
         bool operator==(const str_subview& other) const {
             if (len != other.len) return false;
-            return std::memcmp(data, other.data, len) == 0;
+            return memcmp(data, other.data, len) == 0;
         }
     };
 }
@@ -216,7 +216,7 @@ template <uint32_t N>
 inline void str_view::emplace(uint32_t index, const char(&str)[N]) {
     if (index + (N - 1) > cap)
         fstr_view_throw_err("str_view::emplace, out-of-bounds memory");
-    std::memcpy(data + index, str, N - 1);
+    memcpy(data + index, str, N - 1);
     if (index + (N - 1) > len) len = index + (N - 1);
     data[len] = '\0';
 }
@@ -226,7 +226,7 @@ inline void str_view::emplace(const uint32_t index, const char* str, const uint3
     if (!str) return;
     if (index + count > cap)
         fstr_view_throw_err("str_view::emplace, out-of-bounds memory");
-    std::memcpy(data + index, str, count);
+    memcpy(data + index, str, count);
     if (index + count > len) len = index + count;
     data[len] = '\0';
 }
@@ -246,7 +246,7 @@ inline int str_view::find(char c, uint32_t pos) const {
 template<uint32_t N>
 inline bool str_view::operator==(const char(&str)[N]) {
     if (len != N - 1) return false;
-    return std::memcmp(data, str, len) == 0;
+    return memcmp(data, str, len) == 0;
 }
 
 inline bool str_view::operator==(const char* str) const {
@@ -262,7 +262,7 @@ inline bool str_view::operator==(const char* str) const {
 template<uint32_t N>
 inline str_view& str_view::operator<<(const char(&str)[N]) {
     const uint32_t bytes = std::min<uint32_t>(N - 1, cap - len);
-    std::memcpy(data + len, str, bytes);
+    memcpy(data + len, str, bytes);
     len += bytes;
     data[len] = '\0';
     return *this;
@@ -271,7 +271,7 @@ inline str_view& str_view::operator<<(const char(&str)[N]) {
 inline str_view& str_view::operator<<(const char* str) {
     if (!str) return (*this) << "nullptr";
     const uint32_t bytes = std::min<uint32_t>(std::strlen(str), cap - len);
-    std::memcpy(data + len, str, bytes);
+    memcpy(data + len, str, bytes);
     len += bytes;
     data[len] = '\0';
     return *this;
@@ -504,7 +504,7 @@ constexpr gan::fstring<C>::fstring(const char* str) { // NOLINT(*-pro-type-membe
     // Gets the lenght of our string
     len = std::min<uint32_t>(strlen(str), C - 1);
     // Allocate memory for array with builtin memcpy
-    std::memcpy(arr, str, len);
+    memcpy(arr, str, len);
     // Assign our null character
     arr[len] = '\0';
     // Assign our precision identifier
@@ -602,7 +602,7 @@ void gan::fstring<C>::emplace(uint32_t index, const char* str, uint32_t count)
     requires(index + count <= C)
 {
     if (!str) return; // nothing to copy
-    std::memcpy(arr + index, str, count);
+    memcpy(arr + index, str, count);
     // Update length if we extended past current len
     if (index + count > len) {
         len = index + count;
@@ -637,7 +637,7 @@ template<uint32_t C>
 template<uint32_t N>
 bool gan::fstring<C>::operator==(const char(&str)[N]) const {
     if (len != N - 1) return false;
-    return std::memcmp(arr, str, len) == 0;
+    return memcmp(arr, str, len) == 0;
 }
 
 template<uint32_t C>
@@ -728,7 +728,7 @@ gan::fstring<C> & gan::fstring<C>::operator<<(bool b) {
 
 inline gan::str_view& gan::str_view::operator<<(const gan::str_view &other) {
     const uint32_t bytes = std::min<uint32_t>( other.length(), cap - len);
-    std::memmove(data + len, other.c_str(), bytes);
+    memmove(data + len, other.c_str(), bytes);
     len += bytes;
     return *this;
 }

@@ -17,7 +17,7 @@ namespace gobin {
     void write_data(serial::Serial* serial, const uint8_t* data, size_t size) {
 
         uint8_t* heap_data = new uint8_t[size];
-        std::memcpy(heap_data, data, size);
+        memcpy(heap_data, data, size);
 
         auto write_data_multithread = []
             (serial::Serial* serial,

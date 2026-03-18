@@ -45,7 +45,7 @@ namespace gobin {
                 // if we have remaining bits
                 if (serial_overflow[0] != '\0') {
                     cur_size = serial_overflow_size;
-                    std::memcpy(read_bits, serial_overflow, cur_size);
+                    memcpy(read_bits, serial_overflow, cur_size);
                     serial_overflow_size = 0;
                     serial_overflow[0] = '\0';
                 }
@@ -64,7 +64,7 @@ namespace gobin {
                 std::cerr << std::endl;
 
                 if (read_bits[i] != '\0') {
-                    std::memcpy(serial_overflow, read_bits + i, i - last_size);
+                    memcpy(serial_overflow, read_bits + i, i - last_size);
                     serial_overflow_size = i - last_size;
                 }
             }

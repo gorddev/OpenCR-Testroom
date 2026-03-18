@@ -35,7 +35,7 @@ namespace gobin {
             if (size > max_bits)
                 throw std::runtime_error("bit_buffer_c overflow");
 
-            std::memcpy(buffer[head].first, data, size);
+            memcpy(buffer[head].first, data, size);
             buffer[head].second = size;
 
             head = (head + 1) % slots;
@@ -53,7 +53,7 @@ namespace gobin {
             auto& slot = buffer[tail];
 
             dataPair ret;
-            std::memcpy(&ret.command, slot.first, sizeof(Command));
+            memcpy(&ret.command, slot.first, sizeof(Command));
 
             ret.data = slot.first + sizeof(Command);
             ret.size = slot.second;

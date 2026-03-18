@@ -1,6 +1,5 @@
 #pragma once
 
-#include <memory>
 
 /* Created by Gordie Novak on 3/16/26.
  * Purpose: 
@@ -31,7 +30,7 @@ namespace gobin {
         }
 
         void write_mem(const void* src, size_t index, size_t num_bits) {
-            std::memcpy(bits + index, src, num_bits);
+            memcpy(bits + index, src, num_bits);
         }
 
         void write_byte(uint8_t byte, size_t index) {
