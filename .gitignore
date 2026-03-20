@@ -1,0 +1,6 @@
+DynamixelWorkbench.h
+cmake-build.debug
+.idea
+.DS_Store
+GraphicalController/.idea
+the-goblin/.idea
