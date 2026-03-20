@@ -1,6 +1,6 @@
 #pragma once
 
-#include <imgui.h>
+#include "../SDL_API.h"
 #include <backends/imgui_impl_sdl3.h>
 #include <backends/imgui_impl_opengl3.h>
 
@@ -25,7 +25,7 @@ namespace gan {
 
     public:
         explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
-             window(gan::Window::makeGL(windowName, {300, 300}, gan::WindowFloatOnTop | gan::WindowResizable))
+             window(gan::Window::makeGL(windowName, {400, 800}, prop))
         {
             ImGui_ImplSDL3_InitForOpenGL(window, window.getGlContext());
             #ifdef __APPLE__

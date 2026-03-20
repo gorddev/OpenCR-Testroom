@@ -1,7 +1,7 @@
 #pragma once
 
 #include "../core/crdef.h"
-#include "../core/crstream.hpp"
+#include "../core/crstream.h"
 #include "command.h"
 
 namespace gobin {

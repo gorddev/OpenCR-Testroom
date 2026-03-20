@@ -1,15 +1,15 @@
 #define OPEN_CR
-#include "src/goblin/Goblin.h"
+
 #include "src/command/fetch.h"
-#include "src/core/crstream.hpp"
-#include "src/core/crerror.h"
+#include "src/core/crconnect.h"
+
 its_goblin_time(goblin);
 
 using namespace gobin;
 
 void setup() {
   // first we wait for a serial connection.
-  serial::arduino_await();
+  serial::arduino_connect();
   // initialize the goblin
   goblin.init();
 
@@ -27,9 +27,8 @@ void fetch_serial();
 
 void loop() {
 
-  static int i = 0;
-  if (i++ % 10000000 == 0) {
-    CRPrint("Alive");
+  if (!serial::arduino_ping()) {
+    serial::arduino_await_reconnect(goblin);
   }
 
   while (goblin.port.fetch()) {
@@ -48,7 +47,7 @@ void loop() {
     case T_MOTOR_LIST: //< if the serial asks for a list of all the current motors
       fetch::motor_list(goblin, c);
       break;
-    case T_MOTOR_ID:
+    case T_MOTOR_ID: //< if the serial requests to change a motor id.
       fetch::motor_id(goblin, c);
       break;
     case T_MOTOR_JOINT_MODE:
@@ -56,6 +55,9 @@ void loop() {
       break;
     case T_MOTOR_WHEEL_MODE:
       fetch::wheel_mode(goblin, c);
+      break;
+    case T_MOTOR_TORQUE:
+      fetch::torque(goblin, c);
       break;
     default:
       CRError(UNKNOWN_COMMAND_TYPE, c.type);

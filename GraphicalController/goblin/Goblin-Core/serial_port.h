@@ -41,10 +41,6 @@ namespace gobin {
 
             try {
                 serial_port serial(port, baudrate);
-                serial.port->setFlowcontrol(serial::flowcontrol_none);
-                serial::Timeout to = serial::Timeout::simpleTimeout(1000);
-                to.write_timeout_constant = 0; // Disable write timeout for blocking behavior
-                serial.port->setTimeout(to);
 
                 if (serial.port->isOpen()) {
                     printf("Initialization of port %s @%llu successful.\n", port, baudrate);

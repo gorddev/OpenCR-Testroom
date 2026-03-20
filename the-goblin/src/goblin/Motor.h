@@ -1,5 +1,6 @@
 #pragma once
 #include "Workbench.h"
+#include "../core/crstream.h"
 
 namespace gobin {
 
@@ -12,170 +13,152 @@ namespace gobin {
     };
 
     struct Motor {
-        u16 model_num = 0;
-        u8 id = -1;
-        MotorMode mode = NO_MOTOR_MODE;
+        u16 model_num = 0;  //< model number of the motor.
+        u8 id = -1;         //< id of the motor.
+        MotorMode mode = NO_MOTOR_MODE; //< current mode of the moder.
 
+    /* ----------------------------------------------------- */
+    /* --------------------- Velocity ---------------------- */
+
+        /// Sets the velocity of the motor.
         void setVelocity(i32 velocity) const {
             if (mode != WHEEL_MODE) {
-                CRPrint("Warning: Cannot set velocity as motor is not in wheel mode.\n");
+                CRError(VELOCITY_SET_NOT_WHEEL_MODE, id);
                 return;
-            }
-            if (velocity > invar::vel_max)
+            } if (velocity > invar::vel_max) {
+                CRError(VELOCITY_SET_ABOVE_MAX, id);
                 velocity = invar::vel_max;
-            else if (velocity < -invar::vel_max)
+            } else if (velocity < -invar::vel_max) {
+                CRError(VELOCITY_SET_BELOW_MIN, id);
                 velocity = -invar::vel_max;
+            }
 
             if (!workbench::wb.goalVelocity(id, velocity)) {
-                CRPrint("Failed to set velocity mode for motor.\n");
-                CRExit();
+                CRError(WHEEL_MODE_SET_FAIL, id);
             }
         }
 
         void changeVelocity(i32 d_velocity) const {
-            const i32 vel = getVelocity();
+            i32 vel = getVelocity() + d_velocity;
+            if (vel > invar::vel_max) {
+                vel = invar::vel_max;
+            } else if (vel < invar::vel_min) {
+                vel = invar::vel_min;
+            }
             setVelocity(vel + d_velocity);
         }
+
+        [[nodiscard]] i32 getVelocity() const {
+            i32 vel{};
+            if (!workbench::wb.getPresentVelocityData(id, &vel)) {
+                CRError(VELOCITY_GET_FAIL, id);
+            }
+            return vel;
+        }
+
+    /* ----------------------------------------------------- */
+    /* --------------------- Position ---------------------- */
 
         void changePosition(i32 position) const {
             const i32 pos = getPosition();
             setPosition(pos + position);
         }
 
+        /// Sets position. Max position is @code invar::max_pos@endcode. Minimum is @code invar::min_pos@endcode.
         void setPosition(i32 position) const {
-            if (mode == JOINT_MODE) {
-                if (!workbench::wb.goalPosition(id, position)) {
-                    CRError(POSITION_SET_FATAL, id);
-                    CRExit();
-                }
-            } else {
+            if (mode != JOINT_MODE) {
                 CRError(POSITION_SET_NOT_JOINT_MODE, id);
+                return;
+            } if (position > invar::pos_max) {
+                CRError(POSITION_SET_ABOVE_MAX, id);
+                position = invar::pos_max;
+            } else if (position < invar::pos_min) {
+                CRError(POSITION_SET_BELOW_MIN, id);
+                position = invar::pos_min;
+            }
+
+            if (!workbench::wb.goalPosition(id, position)) {
+                CRError(POSITION_SET_FAIL, id);
             }
         }
 
-        i32 getVelocity() const {
-            i32 vel;
-            workbench::wb.getPresentVelocityData(id, &vel);
-            return vel;
-        }
-
-        i32 getPosition() const {
+        [[nodiscard]] i32 getPosition() const {
             i32 pos;
-            workbench::wb.getPresentPositionData(id, &pos);
+            if (!workbench::wb.getPresentPositionData(id, &pos)) {
+                CRError(POSITION_GET_FAIL, id);
+            }
             return pos;
         }
 
-        float getRadians() const {
+    /* ----------------------------------------------------- */
+    /* --------------------- Radians ---------------------- */
+
+        [[nodiscard]] float getRadians() const {
             float radians;
-            workbench::wb.getRadian(id, &radians);
+            if (!workbench::wb.getRadian(id, &radians, &workbench::cr_log)) {
+                CRError(RADIANS_GET_FAIL, id);
+                return 0.f;
+            }
             return radians;
         }
 
+    /* ----------------------------------------------------- */
+    /* --------------------- Modes ------------------------- */
+
         void setJointMode(const i32 vel, const i32 acc) {
             if (!workbench::wb.jointMode(id, vel, acc)) {
-                CRError(JOINT_MODE_SET_FATAL, id);
-                CRExit();
+                CRError(JOINT_MODE_SET_FAIL, id);
+            } else {
+                CRPrint("Setting joint mode");
+                mode = JOINT_MODE;
             }
-            mode = JOINT_MODE;
         }
 
-        void setWheelMode(u32 vel) {
+        void setWheelMode(const i32 vel) {
             if (!workbench::wb.wheelMode(id, vel)) {
-                CRError(WHEEL_MODE_SET_FATAL, id);
-                CRExit();
+                CRError(WHEEL_MODE_SET_FAIL, id);
+            } else {
+                CRPrint("Setting wheel mode.");
+                mode = WHEEL_MODE;
             }
-            mode = WHEEL_MODE;
         }
 
-        void setMotorID(const u8 motor_id) const {
-            workbench::wb.changeID(id, motor_id);
+    /* ----------------------------------------------------- */
+    /* --------------------- Misc  ------------------------- */
+
+        void setTorque(b8 torque) const {
+            if (torque) {
+                enableTorque();
+            } else {
+                disableTorque();
+            }
         }
 
         void enableTorque() const {
-            workbench::wb.torqueOn(id);
+            if (!workbench::wb.torqueOn(id)) {
+                CRError(TORQUE_ENABLE_FAIL, id);
+            }
         }
 
         void disableTorque() const {
-            workbench::wb.torqueOff(id);
+            if (!workbench::wb.torqueOff(id)) {
+                CRError(TORQUE_DISABLE_FAIL, id);
+            }
         }
 
         Motor() = default;
 
-    };
-
-    struct MotorList {
     private:
-        Motor motorArr[invar::max_motor_id];
-    public:
-        u8 motor_count = 0;
-
-        void addMotor(i8 motor_id, u16 model_num) {
-            if (motor_count < invar::max_motor_id) {
-                motorArr[motor_count].id = motor_id;
-                motorArr[motor_count].model_num = model_num;
-                motor_count++;
+        void setMotorID(const u8 motor_id) {
+            if (!workbench::wb.changeID(id, motor_id)) {
+                CRError(MOTOR_ID_SET_FAIL, id);
+            } else {
+                id = motor_id;
             }
         }
 
-        b8 findMotors() {
-            if (motor_count != 0) {
-                CRError(SCANNED_FOR_MOTORS_MORE_THAN_ONCE, motor_count);
-                return false;
-            }
+        friend class MotorList;
 
-            u16 model_num;
-
-            CRPrint("Checking for motor ids.");
-            for (i8 id = 0; id < invar::max_motor_id; id++) {
-                if (workbench::wb.ping(id, &model_num, &workbench::cr_log)) {
-                    // if we find the motor, add it to our list of found motors.
-                    addMotor(id, model_num);
-                }
-            }
-
-            CRPrint("Found motors.");
-            CRCommand({COM_INFO, T_MOTOR_LIST, motor_count}, motorArr, sizeof(Motor) * motor_count);
-
-            return true;
-        }
-
-        b8 verifyMotor(i8 motor_id) const {
-            for (i8 i = 0; i < motor_count; i++) {
-                if (motorArr[i].id == motor_id) {
-                    return true;
-                }
-            }
-            return false;
-        }
-
-        Motor& operator[](u8 motor_id) {
-            for (i8 i = 0; i < motor_count; i++) {
-                if (motorArr[i].id == motor_id) {
-                    return motorArr[i];
-                }
-            }
-            CRError(INVALID_MOTOR_INDEX_FATAL, motor_id);
-            CRPanic("Motor doesn't exist. Please call motors.findMotors() first");
-        }
-
-        class iterator {
-            Motor* m;
-        public:
-            explicit iterator(Motor* m) : m(m) {}
-
-            iterator& operator++() {++m; return *this;}
-            Motor& operator*() const {return *m;}
-            Motor* operator->() const {return m;}
-            b8 operator==(const iterator& other) const {return m == other.m;}
-            b8 operator!=(const iterator& other) const {return m != other.m;}
-        };
-
-        iterator begin() {return iterator{motorArr};}
-        iterator end() {return iterator{motorArr + motor_count};}
-
-    private:
-        friend class Goblin;
-        MotorList() = default;
     };
 
 }

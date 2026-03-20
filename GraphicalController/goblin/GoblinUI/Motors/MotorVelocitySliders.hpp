@@ -3,7 +3,7 @@
 #include <cmath>
 #include <cstdint>
 #include <imgui.h>
-#include "shared/Invariants.h"
+#include "../the-goblin/src/goblin/Invariants.h"
 
 /* Created by Gordie Novak on 3/15/26.
  * Purpose: 

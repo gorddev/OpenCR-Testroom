@@ -30,8 +30,6 @@ int main() {
     SDL_Init(SDL_INIT_VIDEO);
     gobin::GoblinController controller("Goblin Goblin", core);
 
-    ImGui::SetWindowFontScale(3.f);
-
     SDL_Event e;
 
     bool running = true;
@@ -42,8 +40,8 @@ int main() {
             if (e.type == SDL_EVENT_QUIT) running = false;
         }
 
-        // Fetch everything from the OpenCR board.
-        core.fetch();
+        // motor motor
+        core.update();
 
         // Render the controller.
         controller.display();

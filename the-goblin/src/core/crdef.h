@@ -1,6 +1,8 @@
 #pragma once
 
+#ifdef OPEN_CR
 #include <DynamixelWorkbench.h>
+#endif
 
 typedef uint8_t u8;
 typedef uint16_t u16;

@@ -28,6 +28,8 @@ namespace gobin::com {
             return "ERROR";
         case COM_ECHO:
             return "ECHO";
+        case COM_STATUS:
+            return "STATUS";
         default:
             return "__undefined__";
         }
@@ -42,8 +44,6 @@ namespace gobin::com {
             return "MOTOR_VELOCITY";
         case T_MOTOR_POSITION:
             return "MOTOR_POSITION";
-        case T_STATUS:
-            return "STATUS";
         case T_MOTOR_LIST:
             return "MOTOR_LIST";
         case T_MOTOR_JOINT_MODE:
@@ -166,9 +166,6 @@ namespace gobin::com {
         comprint(comcast(data), data + sizeof(Command));
     }
 
-
-
-
 /* ********************************************* */
 
     inline const char* err_str(Error e) {
@@ -177,8 +174,8 @@ namespace gobin::com {
             return "ERROR_UNDEFINED";
         case PRINT_OVERFLOW:
             return "PRINT_OVERFLOW";
-        case COMMAND_SIZE_TOO_BIG_FATAL:
-            return "COMMAND_SIZE_TOO_BIG_FATAL";
+        case COMMAND_SIZE_TOO_BIG_FAIL:
+            return "COMMAND_SIZE_TOO_BIG_FAIL";
         case INVALID_COMMAND_TYPE_CHANGE_ID:
             return "INVALID_COMMAND_TYPE_CHANGE_ID";
         case INVALID_COMMAND_TYPE_ECHO_CONSOLE:
@@ -193,27 +190,54 @@ namespace gobin::com {
             return "INVALID_COMMAND_TYPE_SET_JOINT_MODE";
         case INVALID_COMMAND_TYPE_SET_WHEEL_MODE:
             return "INVALID_COMMAND_TYPE_SET_WHEEL_MODE";
+        case INVALID_COMMAND_TYPE_SET_TORQUE:
+            return "INVALID_COMMAND_TYPE_SET_TORQUE_MOTOR";
         case UNKNOWN_COMMAND_TYPE:
             return "UNKNOWN_COMMAND_TYPE";
-        case INVALID_MOTOR_INDEX_FATAL:
-            return "INVALID_MOTOR_INDEX_FATAL";
-        case POSITION_SET_FATAL:
-            return "POSITION_SET_FATAL";
+        case MOTOR_DOES_NOT_EXIST:
+            return "INVALID_MOTOR_INDEX";
+        case POSITION_GET_FAIL:
+            return "POSITION_GET_FAIL";
+        case POSITION_SET_FAIL:
+            return "POSITION_SET_FAIL";
         case POSITION_SET_NOT_JOINT_MODE:
             return "POSITION_SET_NOT_JOINT_MODE";
-        case VELOCITY_SET_FATAL:
-            return "VELOCITY_SET_FATAL";
+        case POSITION_SET_BELOW_MIN:
+            return "POSITION_SET_BELOW_MIN";
+        case POSITION_SET_ABOVE_MAX:
+            return "POSITION_SET_ABOVE_MAX";
+        case VELOCITY_SET_FAIL:
+            return "VELOCITY_SET_FAIL";
+        case VELOCITY_GET_FAIL:
+            return "VELOCITY_GET_FAIL";
+        case VELOCITY_SET_ABOVE_MAX:
+            return "VELOCITY_SET_ABOVE_MAX";
         case VELOCITY_SET_NOT_WHEEL_MODE:
             return "VELOCITY_SET_NOT_WHEEL_MODE";
-        case JOINT_MODE_SET_FATAL:
-            return "JOINT_MODE_SET_FATAL";
-        case WHEEL_MODE_SET_FATAL:
-            return "WHEEL_MODE_SET_FATAL";
+        case JOINT_MODE_SET_FAIL:
+            return "JOINT_MODE_SET_FAIL";
+        case WHEEL_MODE_SET_FAIL:
+            return "WHEEL_MODE_SET_FAIL";
+        case MOTOR_ID_SET_FAIL:
+            return "MOTOR_ID_SET_FAIL";
+        case TORQUE_ENABLE_FAIL:
+            return "TORQUE_ENABLE_FAIL";
+        case TORQUE_DISABLE_FAIL:
+            return "TORQUE_DISABLE_FAIL";
         case SCANNED_FOR_MOTORS_MORE_THAN_ONCE:
             return "SCANNED_FOR_MOTORS_MORE_THAN_ONCE";
-        default:
-            return "__undefined__";
+        case NO_MOTORS_FOUND_IN_SCAN:
+            return "NO_MOTORS_FOUND_IN_SCAN";
+        case INVALID_NEW_MOTOR_ID_ABOVE_LIMIT:
+            return "INVALID_NEW_MOTOR_ID_ABOVE_LIMIT";
+        case INVALID_NEW_MOTOR_ID_MOTOR_DOES_NOT_EXIST:
+            return "INVALID_NEW_MOTOR_ID_MOTOR_DOES_NOT_EXIST";
+        case INVALID_NEW_MOTOR_ID_MOTOR_ALREADY_HAS_ID:
+            return "INVALID_NEW_MOTOR_ID_MOTOR_ALREADY_HAS_ID";
+        case FETCH_INVALID_MOTOR_ID:
+            return "FETCH_INVALID_MOTOR_ID";
         }
+        return "__unreachable__";
     }
 
     inline void printerr(const Command& c, const Error& e) {

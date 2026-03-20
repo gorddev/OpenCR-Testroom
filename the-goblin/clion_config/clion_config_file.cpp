@@ -3,7 +3,7 @@
  */
 
 #include <iostream>
-#include "../src/core/crstream.hpp"
+#include "../src/core/crstream.h"
 #include "../src/command/command-io.h"
 
 int main(void) {

@@ -1,8 +1,8 @@
 #pragma once
 
 #include <DynamixelWorkbench.h>
+
 #include "Invariants.h"
-#include "../core/crstream.hpp"
 
 constexpr uint32_t BAUDRATE = 1000000;
 constexpr char DEVICE_NAME[] = "";
@@ -23,16 +23,4 @@ namespace gobin {
         }
     }
 
-}
-
-namespace serial {
-
-    // sets up a serial connection
-    inline void arduino_await() {
-        // first we begin the connection with the base baudrate
-        Serial.begin(BAUDRATE);
-        while (!Serial);
-
-        CRPrint("Connected to local machine");
-    }
 }

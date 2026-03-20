@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Motor.h"
+#include "MotorList.h"
 #include "Workbench.h"
 #include "../core/crdef.h"
 #include "../command/serial_receiver.h"
@@ -18,18 +18,17 @@ namespace gobin {
         b8 init() {
 
             if (initialized) {
-                CRPanic("dxl_workbench already initialized.");
-            }
-
-            if (!wb.init(DEVICE_NAME, BAUDRATE, &log)) {
+                CRError(DXL_WORKBENCH_ALREADY_INITIALIZED, initialized);
+            } else if (!wb.init(DEVICE_NAME, BAUDRATE, &log)) {
                 CRPrint("Failed to initialize workbench. Received error:\n\t");
                 CRPrint(log, strlen(log));
                 CRExit();
             }
 
-            CRPrint("Connected to board");
+            CRPrint("Dynamixel Workbench initialized");
             initialized = true;
 
+            // search for all fo the motors.
             motors.findMotors();
 
             return true;

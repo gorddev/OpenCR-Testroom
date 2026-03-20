@@ -20,7 +20,7 @@ namespace gobin {
 
         MotorVelocitySlider velocity_ui;
 
-        void button(Motor motors[], uint8_t num_motors) {
+        void button(MotorCore motors[], uint8_t num_motors) {
 
             ImGui::Text("Motor Controller");
 
@@ -77,7 +77,7 @@ namespace gobin {
         }
 
     private:
-        void zero_out_button(Motor motors[], uint8_t num_motors) {
+        void zero_out_button(MotorCore motors[], uint8_t num_motors) {
             ImGui::BeginGroup();
             ImGui::AlignTextToFramePadding();
             ImGui::Text("~{");
@@ -97,7 +97,7 @@ namespace gobin {
             ImGui::EndGroup();
         }
 
-        static void display_motor_stats(Motor motors[], uint8_t num_motors) {
+        static void display_motor_stats(MotorCore motors[], uint8_t num_motors) {
 
             ImGui::BeginTable("Motor Info", 2, ImGuiTableFlags_BordersInnerV);
 
@@ -110,7 +110,7 @@ namespace gobin {
             for (int i = 0; i < num_motors; i++ ) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
-                motor_info << motors[i].id << ": " << motors[i].model_num;
+                motor_info << motors[i].motor_id << ": " << motors[i].model_num;
                 ImGui::Text("%s", motor_info.c_str());
                 ImGui::TableSetColumnIndex(1);
                 motor_status << "v: " << motors[i].vel << " p: ";// << motors[i].pos;
@@ -124,7 +124,7 @@ namespace gobin {
         }
 
         static void color_button() {
-            ImGui::PushStyleColor(ImGuiCol_Button, ImVec4(0.0f, 0.5f, 0.0f, 1.0f));         // Normal color (dark green)
+
             ImGui::PushStyleColor(ImGuiCol_ButtonHovered, ImVec4(0.0f, 0.7f, 0.0f, 1.0f));   // Hovered color (brighter green)
             ImGui::PushStyleColor(ImGuiCol_ButtonActive, ImVec4(0.0f, 0.9f, 0.0f, 1.0f));
         }

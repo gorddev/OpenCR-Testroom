@@ -14,7 +14,7 @@ constexpr u16 CR_PRINT_MAX_LEN = 150;
 
 inline void CRError(const gobin::CRErrorCode error_code, const u8 error_info) {
     const auto data = gobin::com::bitcast(
-        gobin::Command{gobin::COM_ERROR, gobin::T_STATUS, 0},
+        gobin::Command{gobin::COM_ERROR, gobin::T_PRINT_CONSOLE, 0},
         gobin::Error{error_code, error_info});
     Serial.write(data.bits, data.size());
 }
@@ -40,6 +40,13 @@ inline void CRPrint(const char msg[], const u16 len) {
 
 inline void CRPrint(const u8 msg[], const u16 len) {
     CRPrint(reinterpret_cast<const char*>(msg), len);
+}
+
+inline const char* itostr(int num);
+
+inline void CRPrint(i32 i) {
+    const char* msg = itostr(i);
+    CRPrint(msg, strlen(msg));
 }
 
 /* ***************************************** */

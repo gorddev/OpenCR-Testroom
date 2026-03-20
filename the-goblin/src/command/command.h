@@ -22,6 +22,7 @@ enum ComType : uint8_t {
   COM_INFO = 'I',
   COM_ERROR = 'E',
   COM_ECHO = '>',
+  COM_STATUS = '!'
 };
 
 // Declares where the data should target
@@ -34,7 +35,7 @@ enum ComTarget : uint8_t {
   T_MOTOR_WHEEL_MODE = 'w',
   T_MOTOR_ID = 'i',
   T_MOTOR_LIST = 'l',
-  T_STATUS = 's',
+  T_MOTOR_TORQUE = 't',
 };
 
 // Contains additional information about the data
