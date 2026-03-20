@@ -1,7 +1,7 @@
 #pragma once
 
 #include <concepts>
-#include <memory.h>
+#include <cstring>
 
 // str_subview definition below
 
@@ -273,7 +273,7 @@ inline str_view& str_view::operator<<(const char(&str)[N]) {
 
 inline str_view& str_view::operator<<(const char* str) {
     if (!str) return (*this) << "nullptr";
-    const uint32_t bytes = min<uint32_t>(std::strlen(str), cap - len);
+    const uint32_t bytes = min<uint32_t>(strlen(str), cap - len);
     memcpy(data + len, str, bytes);
     len += bytes;
     data[len] = '\0';
