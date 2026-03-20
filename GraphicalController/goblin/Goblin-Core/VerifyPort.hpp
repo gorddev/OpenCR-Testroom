@@ -115,4 +115,6 @@ jump_verifyPort_gob:
         ofile.close();
         return goblin;
     }
+
+    return std::nullopt;
 }
