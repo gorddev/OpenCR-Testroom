@@ -41,6 +41,7 @@ namespace gobin {
 
             try {
                 serial_port serial(port, baudrate);
+                serial.port->setFlowcontrol(serial::flowcontrol_none);
 
                 if (serial.port->isOpen()) {
                     printf("Initialization of port %s @%llu successful.\n", port, baudrate);

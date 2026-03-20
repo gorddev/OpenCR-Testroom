@@ -41,7 +41,7 @@ inline bool verifyPathIsPort(const std::string& path) {
     } else if (std::filesystem::is_directory(path)) {
         std::cout << "ERR: '" << path << "' is a directory.";
     } else if (std::filesystem::is_regular_file(path)) {
-        std::cout << "ERR: '" << path << "' is a regular file.";
+        return true;
     } else if (std::filesystem::is_symlink(path)) {
         std::cout << "ERR: '" << path << "' is a symlink.";
     } else if (std::filesystem::is_socket(path)) {

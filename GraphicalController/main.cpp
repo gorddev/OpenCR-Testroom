@@ -30,6 +30,8 @@ int main() {
     SDL_Init(SDL_INIT_VIDEO);
     gobin::GoblinController controller("Goblin Goblin", core);
 
+    ImGui::SetWindowFontScale(3.f);
+
     SDL_Event e;
 
     bool running = true;

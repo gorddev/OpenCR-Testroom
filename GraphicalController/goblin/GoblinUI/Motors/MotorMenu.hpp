@@ -43,7 +43,7 @@ namespace gobin {
 
 
             if (update.update1000 && mot.empty()) {
-                core.queryMotorList();
+                //core.queryMotorList();
                 return;
             }
 
@@ -89,7 +89,6 @@ namespace gobin {
 
                 if (update && inst.vel != core.motors[inst.index].vel) {
                     core.setVelocity(inst.index, inst.vel);
-
                 }
             }
             ImGui::SetNextItemWidth(100);
