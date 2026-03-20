@@ -47,7 +47,7 @@ namespace gan::err {
             panic(src);
             throw std::runtime_error("");
         }
-        return opt.value();
+        return std::move(opt.value());
     }
 }
 

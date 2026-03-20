@@ -7,6 +7,7 @@ set(OpenGL_ES OFF)
 
 # we have to include fetch content to we get repos from git
 include(FetchContent)
+
 find_package(SDL3)
 
 ####################
@@ -150,13 +151,19 @@ target_link_libraries(GraphicalController
 if(NOT OpenGL_ES)
     target_compile_options(GraphicalController PRIVATE
         -DOpenGL_Core
+        -fsanitize=address
     )
 else()
     target_compile_options(GraphicalController PRIVATE
         -DOpenGL_ES
+        -fsanitize=address
     )
 endif()
 
+
+target_link_options(GraphicalController PRIVATE
+    -fsanitize=address
+)
 
 if(APPLE)
     target_include_directories(GraphicalController PRIVATE

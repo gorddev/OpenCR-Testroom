@@ -1,7 +1,6 @@
 #pragma once
 
 #include <concepts>
-#include <cstring>
 
 // str_subview definition below
 
@@ -157,8 +156,6 @@ namespace gan {
 
 // str_view definition below
 
-#include <algorithm>
-#include <stdexcept>
 #include <charconv>
 
 /** @brief Throws an exception for str_view errors */

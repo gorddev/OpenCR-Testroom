@@ -1,47 +1,68 @@
 #define OPEN_CR
-#include "src/include/Keyboard.h"
-#include "src/include/Goblin.h"
-#include "../serialization/command.h"
-
-
+#include "src/goblin/Goblin.h"
+#include "src/command/fetch.h"
+#include "src/core/crstream.hpp"
+#include "src/core/crerror.h"
 its_goblin_time(goblin);
 
+using namespace gobin;
 
 void setup() {
+  // first we wait for a serial connection.
   serial::arduino_await();
+  // initialize the goblin
   goblin.init();
 
+  // set all fo them to wheel mode
   for (auto& m : goblin.motors) {
     m.setWheelMode(30);
   }
 }
 
-constexpr uint16_t max_buf = 1000;
-uint8_t serial_buf[max_buf];
+
+constexpr u16 max_buf = 1000;
+u8 serial_buf[max_buf];
+
+void fetch_serial();
 
 void loop() {
 
-  int bytes = Serial.available();
-  // if we have bytes for reading.
-  if (bytes > max_buf) {
-
+  static int i = 0;
+  if (i++ % 10000000 == 0) {
+    CRPrint("Alive");
   }
-  if (bytes >= 0) {
-    uint8_t buf[bytes]; //<
-    const size_t read = Serial.readBytes(buf, bytes);
 
-    if (read == 0) {
+  while (goblin.port.fetch()) {
+    Command c = goblin.port.command();
 
+    switch (c.target) {
+    case T_PRINT_CONSOLE: // if the serial wants to echo something.
+      fetch::echo_console(goblin, c);
+      break;
+    case T_MOTOR_VELOCITY: // if the serial commands for velocity-related operations
+      fetch::motor_velocity(goblin, c);
+      break;
+    case T_MOTOR_POSITION: //< if the commands for position-related operations
+      fetch::motor_position(goblin, c);
+      break;
+    case T_MOTOR_LIST: //< if the serial asks for a list of all the current motors
+      fetch::motor_list(goblin, c);
+      break;
+    case T_MOTOR_ID:
+      fetch::motor_id(goblin, c);
+      break;
+    case T_MOTOR_JOINT_MODE:
+      fetch::joint_mode(goblin, c);
+      break;
+    case T_MOTOR_WHEEL_MODE:
+      fetch::wheel_mode(goblin, c);
+      break;
+    default:
+      CRError(UNKNOWN_COMMAND_TYPE, c.type);
+      break;
     }
+    goblin.port.pop();
   }
-
-  for (auto& m : goblin.motors) {
-    if (keys::is_held('w')) {
-      m.changeVelocity(40);
-    } else if (keys::is_held('s')) {
-      m.changeVelocity(-40);
-    }
-  }
-
-  keys::flush();
 }
+
+using namespace gobin;

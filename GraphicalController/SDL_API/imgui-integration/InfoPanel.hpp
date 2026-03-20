@@ -25,9 +25,8 @@ namespace gan {
 
     public:
         explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
-             window(gan::Window::makeGL(windowName, {300, 300}, gan::WindowFloatOnTop))
+             window(gan::Window::makeGL(windowName, {300, 300}, gan::WindowFloatOnTop | gan::WindowResizable))
         {
-            SDL_SetWindowResizable(window, false);
             ImGui_ImplSDL3_InitForOpenGL(window, window.getGlContext());
             #ifdef __APPLE__
             ImGui_ImplOpenGL3_Init("#version 410 core");
@@ -35,7 +34,6 @@ namespace gan {
             std::cerr << glGetString(GL_VERSION) << std::endl;
             ImGui_ImplOpenGL3_Init("#version 300 es");
             #endif
-            std::cerr << glGetString(GL_VERSION) << std::endl;
         }
 
         void handleEvent(const SDL_Event &event) {
@@ -71,7 +69,7 @@ namespace gan {
             return (ImGui::Begin(name, nullptr,
                 ImGuiWindowFlags_NoMove |
                 ImGuiWindowFlags_NoScrollbar |
-                ImGuiWindowFlags_NoResize
+                ImGuiWindowFlags_AlwaysAutoResize
             ));
         }
 
@@ -79,7 +77,7 @@ namespace gan {
             if (window.isHidden())
                 return;
             // resize according to window size.
-            resize_window(sizeReq);
+            //resize_window(sizeReq);
 
             ImGui::End();
 

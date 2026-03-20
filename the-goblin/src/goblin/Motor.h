@@ -1,24 +1,24 @@
 #pragma once
 #include "Workbench.h"
 
-namespace dxl {
+namespace gobin {
 
     class Goblin;
 
-    enum MotorMode : uint8_t{
+    enum MotorMode : u8 {
         NO_MOTOR_MODE = 0,
         WHEEL_MODE = 1,
         JOINT_MODE = 2
     };
 
     struct Motor {
-        uint16_t model_num = 0;
-        uint8_t id = -1;
+        u16 model_num = 0;
+        u8 id = -1;
         MotorMode mode = NO_MOTOR_MODE;
 
-        void setVelocity(int32_t velocity) const {
+        void setVelocity(i32 velocity) const {
             if (mode != WHEEL_MODE) {
-                workbench::success("Warning: Cannot set velocity as motor is not in wheel mode.");
+                CRPrint("Warning: Cannot set velocity as motor is not in wheel mode.\n");
                 return;
             }
             if (velocity > invar::vel_max)
@@ -27,40 +27,40 @@ namespace dxl {
                 velocity = -invar::vel_max;
 
             if (!workbench::wb.goalVelocity(id, velocity)) {
-                CR_PANIC("Failed to set velocity mode for motor.");
-                CR_EXIT;
+                CRPrint("Failed to set velocity mode for motor.\n");
+                CRExit();
             }
         }
 
-        void changeVelocity(int32_t d_velocity) const {
-            const int32_t vel = getVelocity();
+        void changeVelocity(i32 d_velocity) const {
+            const i32 vel = getVelocity();
             setVelocity(vel + d_velocity);
         }
 
-        void changePosition(int32_t position) const {
-            const int32_t pos = getPosition();
+        void changePosition(i32 position) const {
+            const i32 pos = getPosition();
             setPosition(pos + position);
         }
 
-        void setPosition(int32_t position) const {
+        void setPosition(i32 position) const {
             if (mode == JOINT_MODE) {
                 if (!workbench::wb.goalPosition(id, position)) {
-                    CR_PANIC("Failed to set position mode for motor.");
-                    CR_EXIT;
+                    CRError(POSITION_SET_FATAL, id);
+                    CRExit();
                 }
             } else {
-                workbench::success("Warning: Cannot set position as motor is not in joint mode.");
+                CRError(POSITION_SET_NOT_JOINT_MODE, id);
             }
         }
 
-        int32_t getVelocity() const {
-            int32_t vel;
+        i32 getVelocity() const {
+            i32 vel;
             workbench::wb.getPresentVelocityData(id, &vel);
             return vel;
         }
 
-        int32_t getPosition() const {
-            int32_t pos;
+        i32 getPosition() const {
+            i32 pos;
             workbench::wb.getPresentPositionData(id, &pos);
             return pos;
         }
@@ -71,23 +71,23 @@ namespace dxl {
             return radians;
         }
 
-        void setJointMode(uint32_t vel, uint32_t acc) {
+        void setJointMode(const i32 vel, const i32 acc) {
             if (!workbench::wb.jointMode(id, vel, acc)) {
-                CR_PANIC("Failed to set join mode for motor ");
-                CR_PRINT(id); CR_EXIT;
+                CRError(JOINT_MODE_SET_FATAL, id);
+                CRExit();
             }
             mode = JOINT_MODE;
         }
 
-        void setWheelMode(uint32_t vel) {
+        void setWheelMode(u32 vel) {
             if (!workbench::wb.wheelMode(id, vel)) {
-                CR_PANIC("Failed to set wheel mode for motor ");
-                CR_PRINT(id); CR_EXIT;
+                CRError(WHEEL_MODE_SET_FATAL, id);
+                CRExit();
             }
             mode = WHEEL_MODE;
         }
 
-        void setMotorID(const uint8_t motor_id) const {
+        void setMotorID(const u8 motor_id) const {
             workbench::wb.changeID(id, motor_id);
         }
 
@@ -107,45 +107,40 @@ namespace dxl {
     private:
         Motor motorArr[invar::max_motor_id];
     public:
-        int8_t count = 0;
+        u8 motor_count = 0;
 
-        void addMotor(int8_t motor_id, uint16_t model_num) {
-            if (count < invar::max_motor_id) {
-                motorArr[count].id = motor_id;
-                motorArr[count].model_num = model_num;
-                count++;
+        void addMotor(i8 motor_id, u16 model_num) {
+            if (motor_count < invar::max_motor_id) {
+                motorArr[motor_count].id = motor_id;
+                motorArr[motor_count].model_num = model_num;
+                motor_count++;
             }
         }
 
-        bool findMotors() {
-            if (count != 0) {
-                CR_PANIC("Already scanned for motors.");
-                CR_EXIT;
+        b8 findMotors() {
+            if (motor_count != 0) {
+                CRError(SCANNED_FOR_MOTORS_MORE_THAN_ONCE, motor_count);
+                return false;
             }
 
-            uint16_t model_num;
+            u16 model_num;
 
-            workbench::status("Checking motor_ids:");
-            for (int8_t id = 0; id < invar::max_motor_id; id++) {
-                Serial.print(id);
+            CRPrint("Checking for motor ids.");
+            for (i8 id = 0; id < invar::max_motor_id; id++) {
                 if (workbench::wb.ping(id, &model_num, &workbench::cr_log)) {
                     // if we find the motor, add it to our list of found motors.
                     addMotor(id, model_num);
-                    Serial.print("!");
                 }
-                Serial.print(" ");
             }
-            Serial.println();
-            workbench::success("Found motors: { ", 0);
-            for (const auto& m : *this) {
-                Serial.print(m.id); Serial.print(", ");
-            }
-            CR_PRINT("}\n");
+
+            CRPrint("Found motors.");
+            CRCommand({COM_INFO, T_MOTOR_LIST, motor_count}, motorArr, sizeof(Motor) * motor_count);
+
             return true;
         }
 
-        bool verifyMotor(int8_t motor_id) const {
-            for (int8_t i = 0; i < count; i++) {
+        b8 verifyMotor(i8 motor_id) const {
+            for (i8 i = 0; i < motor_count; i++) {
                 if (motorArr[i].id == motor_id) {
                     return true;
                 }
@@ -153,14 +148,14 @@ namespace dxl {
             return false;
         }
 
-        Motor& operator[](uint8_t motor_id) {
-            for (int8_t i = 0; i < count; i++) {
+        Motor& operator[](u8 motor_id) {
+            for (i8 i = 0; i < motor_count; i++) {
                 if (motorArr[i].id == motor_id) {
                     return motorArr[i];
                 }
             }
-            CR_PANIC("Motor doesn't exist. Please call motors.findMotors() first.");
-            CR_EXIT;
+            CRError(INVALID_MOTOR_INDEX_FATAL, motor_id);
+            CRPanic("Motor doesn't exist. Please call motors.findMotors() first");
         }
 
         class iterator {
@@ -171,12 +166,12 @@ namespace dxl {
             iterator& operator++() {++m; return *this;}
             Motor& operator*() const {return *m;}
             Motor* operator->() const {return m;}
-            bool operator==(const iterator& other) const {return m == other.m;}
-            bool operator!=(const iterator& other) const {return m != other.m;}
+            b8 operator==(const iterator& other) const {return m == other.m;}
+            b8 operator!=(const iterator& other) const {return m != other.m;}
         };
 
         iterator begin() {return iterator{motorArr};}
-        iterator end() {return iterator{motorArr + count};}
+        iterator end() {return iterator{motorArr + motor_count};}
 
     private:
         friend class Goblin;

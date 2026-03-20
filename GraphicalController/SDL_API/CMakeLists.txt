@@ -15,7 +15,7 @@ endif()
 include(FetchContent)
 
 # requires SDL3
-find_package(SDL3 REQUIRED)
+find_package(SDL3)
 
 ####################
 # FetchContent Below
@@ -104,7 +104,7 @@ target_include_directories(SDL_API PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-target_link_libraries(SDL_API
+target_link_libraries(SDL_API PUBLIC
     SDL3::SDL3
     SDL_API_ImGui
     SDL_API_GLAD
@@ -122,30 +122,17 @@ else()
 endif()
 
 
-if(SDL_API_OpenGL_ES)
-    message("Including glad4   directories")
+if(NOT SDL_API_OpenGL_ES)
+    message("Including glad4 directories")
     target_include_directories(SDL_API PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad4
     )
 else()
-    message("Including glades   directories")
+    message("Including glades directories")
     target_include_directories(SDL_API PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad_es
     )
 endif ()
-
-
-add_executable(Example
-    SDL_Example.cpp
-)
-
-target_include_directories(Example PRIVATE
-    ${CMAKE_SOURCE_DIR}
-)
-
-target_link_libraries(Example PRIVATE
-    SDL_API
-)
 
 
 

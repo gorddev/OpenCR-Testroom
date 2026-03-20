@@ -8,9 +8,8 @@ include_directories(
 )
 
 add_executable(CRProject
-    main.cpp
     the-goblin.ino
-    the-goblin.ino
+    clion_config/clion_config_file.cpp
 )
 
 target_include_directories(CRProject PRIVATE

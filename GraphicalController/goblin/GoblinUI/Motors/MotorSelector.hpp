@@ -1,12 +1,12 @@
 #pragma once
+
+
 #include <cstdint>
 #include <imgui.h>
 #include <string>
 
-#include <Goblin-Core/Motor.hpp>
 #include "MotorVelocitySliders.hpp"
 #include "types/fstring.hpp"
-#include "shared/Invariants.h"
 
 /* Created by Gordie Novak on 3/15/26.
  * Purpose: 
@@ -110,7 +110,7 @@ namespace gobin {
             for (int i = 0; i < num_motors; i++ ) {
                 ImGui::TableNextRow();
                 ImGui::TableSetColumnIndex(0);
-                motor_info << motors[i].id << ": " << motors[i].model_id;
+                motor_info << motors[i].id << ": " << motors[i].model_num;
                 ImGui::Text("%s", motor_info.c_str());
                 ImGui::TableSetColumnIndex(1);
                 motor_status << "v: " << motors[i].vel << " p: ";// << motors[i].pos;
