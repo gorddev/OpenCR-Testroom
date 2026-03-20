@@ -2,6 +2,7 @@
 
 #include <concepts>
 #include <cstring>
+#include <memory.h>
 
 // str_subview definition below
 
@@ -489,7 +490,7 @@ constexpr gan::fstring<C>::fstring(const char (&str)[N]) { // NOLINT(*-explicit-
     // Gets the length of our string
     len = min<uint32_t>(N - 1, C - 1);
     // Allocate memory for array
-    std::copy(str, str + len, arr);
+    copy(str, str + len, arr);
     // Assign our null character
     arr[len] = '\0';
     // Assign our precision identifier
