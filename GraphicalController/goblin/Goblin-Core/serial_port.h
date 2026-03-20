@@ -43,6 +43,11 @@ namespace gobin {
             try {
                 serial_port serial(port, baudrate);
 
+                #ifdef __WIN32__
+                serial.port->setDTR(true);
+                serial.port->setRTS(true);
+                #endif
+
                 if (serial.port->isOpen()) {
                     printf("Initialization of port %s @%llu successful.\n", port, baudrate);
                 } else {

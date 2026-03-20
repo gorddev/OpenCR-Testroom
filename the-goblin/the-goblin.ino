@@ -20,11 +20,6 @@ void setup() {
 }
 
 
-constexpr u16 max_buf = 1000;
-u8 serial_buf[max_buf];
-
-void fetch_serial();
-
 void loop() {
 
   if (!serial::arduino_ping()) {
@@ -63,8 +58,7 @@ void loop() {
       CRError(UNKNOWN_COMMAND_TYPE, c.type);
       break;
     }
+
     goblin.port.pop();
   }
 }
-
-using namespace gobin;

@@ -5,6 +5,10 @@
   </component>
   <component name="BackendCodeEditorMiscSettings">
     <option name="/Default/Environment/Hierarchy/GeneratedFilesCacheKey/Timestamp/@EntryValue" value="33" type="long" />
+    <option name="/Default/Housekeeping/FeatureSuggestion/FeatureSuggestionManager/DisabledSuggesters/=SwitchToGoToActionSuggester/@EntryIndexedValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/GlobalSettingsUpgraded/IsUpgraded/@EntryValue" value="true" type="bool" />
+    <option name="/Default/Housekeeping/LiveTemplatesHousekeeping/HotspotSessionHintIsShown/@EntryValue" value="true" type="bool" />
+    <option name="/Default/RiderDebugger/RiderRestoreDecompile/RestoreDecompileSetting/@EntryValue" value="false" type="bool" />
   </component>
   <component name="CMakePresetLoader">{
   &quot;useNewFormat&quot;: true
@@ -33,11 +37,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57077290-902f-4de7-be5b-5a7ced5561f0" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/CMakeLists.txt" beforeDir="false" afterPath="$PROJECT_DIR$/CMakeLists.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/SDL_API/imgui-integration/InfoPanel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/SDL_API/imgui-integration/InfoPanel.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/goblin/Goblin-Core/GoblinBrain.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/goblin/Goblin-Core/GoblinBrain.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/goblin/Goblin-Core/VerifyPort.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/goblin/Goblin-Core/VerifyPort.hpp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/goblin/Goblin-Core/serial_port.h" beforeDir="false" afterPath="$PROJECT_DIR$/goblin/Goblin-Core/serial_port.h" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../the-goblin/the-goblin.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../the-goblin/the-goblin.ino" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -64,6 +64,9 @@
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="3B8TjdlqS7GvQDhPFEvyjsUpvVR" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -140,10 +143,10 @@
       <item itemvalue="CMake Application.GLAD" />
       <item itemvalue="CMake Application.GraphicalController" />
       <item itemvalue="CMake Application.ImGui" />
-      <item itemvalue="CMake Application.Serial" />
-      <item itemvalue="CMake Application.SDL_API" />
       <item itemvalue="CMake Application.SDL_API_GLAD" />
       <item itemvalue="CMake Application.SDL_API_ImGui" />
+      <item itemvalue="CMake Application.SDL_API" />
+      <item itemvalue="CMake Application.Serial" />
     </list>
   </component>
   <component name="TaskManager">

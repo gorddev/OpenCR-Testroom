@@ -17,8 +17,9 @@ namespace gobin {
 
         template<typename... Args>
         void addLog(Args&&... args) {
-            (logs[front] << ... << args);
-
+            front = (front + 1) % max_logs;
+            (logs[++front] << ... << args);
+            if (front == back) { back = (back + 1) % max_logs; }
         }
 
     };
