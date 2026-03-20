@@ -4,6 +4,7 @@
 #include "../../../the-goblin/src/command/command.h"
 #include "errors/gan_log.hpp"
 #include "serial/serial.h"
+#include <array>
 
 
 /* Created by Gordie Novak on 3/16/26.
