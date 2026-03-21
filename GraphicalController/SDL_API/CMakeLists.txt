@@ -5,6 +5,10 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(SDL_Render_OpenGL_Core "Whether Embedded Systems lib is enabled" ON)
 
+if (LINUX OR (UNIX AND NOT APPLE))
+    set(SDL_Render_OpenGL_Core OFF)
+endif ()
+
 if (SDL_Render_OpenGL_Core)
     message("Standard OpenGL 4.1 enabled. OpenGL_ES set to OFF.")
 else()
