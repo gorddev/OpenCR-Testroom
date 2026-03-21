@@ -15,7 +15,7 @@ namespace gobin {
         ImFont* console_font;
         ImFont* input_font;
 
-        friend class GoblinController;
+        friend class GoblinGUI;
 
     public:
         GobUI_Style() = default;

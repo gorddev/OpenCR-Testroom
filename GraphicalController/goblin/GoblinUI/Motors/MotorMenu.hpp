@@ -21,16 +21,23 @@ namespace gobin {
 
             ImGui::SetNextItemOpen(true, ImGuiCond_FirstUseEver);
 
-            static bool torque = true;
-            std::string t_Str = std::string("Torque: ") + ((torque) ? "Enabled" : "Disabled");
-            if (ImGui::Checkbox(t_Str.c_str(), &torque)) {
-                for (auto& m : core.motors) {
-                    m.torque = torque;
-                    m.flagForUpdate();
-                }
-            }
-
             if (ImGui::CollapsingHeader("Motors")) {
+                static bool torque = true;
+                std::string t_Str = std::string("Torque: ") + ((torque) ? "Enabled" : "Disabled");
+                if (ImGui::Checkbox(t_Str.c_str(), &torque)) {
+                    for (auto& m : core.motors) {
+                        m.torque = torque;
+                        m.flagForUpdate();
+                    }
+                    if (torque && core.motors.size() > 0) {
+                        selection = 0;
+                    }
+                }
+
+                if (!torque) {
+                    ImGui::BeginDisabled();
+                    selection = -3;
+                }
 
                 ImGui::PushID("motselect");
                 u32 last_selection = selection;
@@ -56,6 +63,9 @@ namespace gobin {
                 if (selection >= 0 && selection < core.motors.size()) {
                     motorInst(core, core.motors[selection]);
                 }
+
+                if (!torque)
+                    ImGui::EndDisabled();
             }
 
         }

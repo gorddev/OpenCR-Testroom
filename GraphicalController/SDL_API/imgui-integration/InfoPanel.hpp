@@ -56,26 +56,27 @@ namespace gan {
         }
 
     protected:
+        ImVec2 winSize{};
         void beginInfoPanel() {
             if (window.isHidden())
                 return;
 
             ImGui::SetCurrentContext(imgui_context);
 
+            imGuiIO.DisplaySize = ImVec2(10000.0f, 10000.0f);
+
             // Set up the new frames for each.
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
+
+            //ImGui::SetNextWindowSize(ImVec2(window.getWidth(), window.getHeight()));
 
         }
 
         void endInfoPanel() const {
             if (window.isHidden())
                 return;
-            // resize according to window size.
-            //resize_window(sizeReq);
-
-            ImGui::End();
 
             draw();
         }
@@ -84,15 +85,6 @@ namespace gan {
         void setup_window() const {
             ImGui::SetNextWindowPos({0,0}, ImGuiCond_Once);
             ImGui::SetNextWindowSize(ImVec2(300,200), ImGuiCond_FirstUseEver);
-        }
-
-        void resize_window(const dim2& size) const {
-            int w, h;
-            SDL_GetWindowSizeInPixels(window, &w, &h);
-            auto im_size = ImGui::GetWindowSize();
-            if (std::abs((int)im_size.x -(int)w) > 1) {
-                window.setDimensions({(int)im_size.x, (int)im_size.y});
-            }
         }
 
 

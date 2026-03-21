@@ -3,7 +3,7 @@
 
 #include "SDL_API/SDL_API.h"
 
-#include "goblin/GoblinUI/GoblinController.hpp"
+#include "goblin/GoblinUI/GoblinGUI.hpp"
 #include "goblin/Goblin-Core/GoblinBrain.hpp"
 #include "Goblin-Core/Verify_Goblin.hpp"
 #include "SDL_API/window/Window.hpp"
@@ -15,7 +15,7 @@ int main() {
 
     gobin::GoblinBrain core;
     SDL_Init(SDL_INIT_VIDEO);
-    gobin::GoblinController controller("Goblin Goblin", core);
+    gobin::GoblinGUI controller("Goblin Goblin", core);
 
     SDL_Event e;
 

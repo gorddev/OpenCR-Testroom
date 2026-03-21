@@ -17,7 +17,7 @@ namespace gobin {
 
 
 
-    struct GoblinController : gan::InfoPanel {
+    struct GoblinGUI : gan::InfoPanel {
 
         GoblinBrain& core;
         GobUI_Style style;
@@ -26,21 +26,21 @@ namespace gobin {
         MotorMenu motor_menu;
 
 
-        explicit GoblinController(const char windowName[], GoblinBrain& core)
+        explicit GoblinGUI(const char windowName[], GoblinBrain& core)
             : InfoPanel(windowName, gan::WindowFloatOnTop | gan::WindowTransparent | gan::WindowResizable),
                 core(core), connectUI(core.brain_log) {
 
             g_style.body_font = imGuiIO.Fonts->AddFontFromFileTTF(
                 (gan::files::assets()/"gob_body_font.ttf").c_str(),
-                24.f);
+                22.f);
 
             g_style.header_font = imGuiIO.Fonts->AddFontFromFileTTF(
                 (gan::files::assets()/"gob_header_font.ttf").c_str(),
-                32.f);
+                26.f);
 
             g_style.input_font = imGuiIO.Fonts->AddFontFromFileTTF(
                 (gan::files::assets()/"gob_input_font.ttf").c_str(),
-                20.f);
+                18.f);
 
             ImFontConfig config;
             config.OversampleH = 3; // Increases horizontal resolution
@@ -48,7 +48,7 @@ namespace gobin {
 
             g_style.console_font = imGuiIO.Fonts->AddFontFromFileTTF(
                 (gan::files::assets()/"gob_console_font.ttf").c_str(),
-                16.f, &config);
+                14.f, &config);
 
 
 
@@ -71,8 +71,8 @@ namespace gobin {
 
             bool b = ImGui::Begin("Goblin Control Panel", nullptr,
                 ImGuiWindowFlags_NoMove |
-                ImGuiWindowFlags_NoScrollbar |
-                ImGuiWindowFlags_AlwaysAutoResize
+                ImGuiWindowFlags_NoScrollbar
+                |ImGuiWindowFlags_AlwaysAutoResize
             );
 
             g_style.popHeaderFont();
@@ -82,6 +82,8 @@ namespace gobin {
 
 
             g_style.popGobDefault();
+
+            ImGui::End();
 
             endInfoPanel();
         }
