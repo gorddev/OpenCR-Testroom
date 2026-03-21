@@ -21,13 +21,13 @@
   </component>
   <component name="CMakeRunConfigurationManager">
     <generated>
+      <config projectName="GraphicalController" targetName="Serial" />
       <config projectName="GraphicalController" targetName="SDL_API_GLAD" />
-      <config projectName="GraphicalController" targetName="SDL_API_ImGui" />
-      <config projectName="GraphicalController" targetName="SDL_API" />
-      <config projectName="GraphicalController" targetName="ImGui" />
       <config projectName="GraphicalController" targetName="GLAD" />
       <config projectName="GraphicalController" targetName="GraphicalController" />
-      <config projectName="GraphicalController" targetName="Serial" />
+      <config projectName="GraphicalController" targetName="SDL_API_ImGui" />
+      <config projectName="GraphicalController" targetName="ImGui" />
+      <config projectName="GraphicalController" targetName="SDL_API" />
     </generated>
   </component>
   <component name="CMakeSettings">
@@ -37,6 +37,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57077290-902f-4de7-be5b-5a7ced5561f0" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/editor.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/editor.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/SDL_API/imgui-integration/InfoPanel.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/SDL_API/imgui-integration/InfoPanel.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/goblin/GoblinUI/GoblinController.hpp" beforeDir="false" afterPath="$PROJECT_DIR$/goblin/GoblinUI/GoblinController.hpp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/../the-goblin/src/goblin/MotorList.h" beforeDir="false" afterPath="$PROJECT_DIR$/../the-goblin/src/goblin/MotorList.h" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/../the-goblin/the-goblin.ino" beforeDir="false" afterPath="$PROJECT_DIR$/../the-goblin/the-goblin.ino" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -143,10 +148,10 @@
       <item itemvalue="CMake Application.GLAD" />
       <item itemvalue="CMake Application.GraphicalController" />
       <item itemvalue="CMake Application.ImGui" />
+      <item itemvalue="CMake Application.Serial" />
+      <item itemvalue="CMake Application.SDL_API" />
       <item itemvalue="CMake Application.SDL_API_GLAD" />
       <item itemvalue="CMake Application.SDL_API_ImGui" />
-      <item itemvalue="CMake Application.SDL_API" />
-      <item itemvalue="CMake Application.Serial" />
     </list>
   </component>
   <component name="TaskManager">

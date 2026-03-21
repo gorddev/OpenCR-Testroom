@@ -13,9 +13,8 @@ void setup() {
   // initialize the goblin
   goblin.init();
 
-  // set all fo them to wheel mode
   for (auto& m : goblin.motors) {
-    m.setWheelMode(30);
+    m.setJointMode(invar::vel_max, invar::acc_rate);
   }
 }
 

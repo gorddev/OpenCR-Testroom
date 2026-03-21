@@ -20,12 +20,14 @@ namespace gan {
     class InfoPanel {
     protected:
         ImGuiContext* imgui_context;
+        ImGuiIO& im_gui_io;
         gan::Window window;
         dim2 sizeReq;
 
     public:
-        explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
-             window(gan::Window::makeGL(windowName, {400, 800}, prop))
+        explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop)
+            : imgui_context(ImGui::CreateContext()), im_gui_io(ImGui::GetIO()),
+             window(Window::makeGL(windowName, {400, 800}, prop))
         {
             ImGui_ImplSDL3_InitForOpenGL(window, window.getGlContext());
             #ifdef __APPLE__
@@ -34,6 +36,7 @@ namespace gan {
             std::cerr << glGetString(GL_VERSION) << std::endl;
             ImGui_ImplOpenGL3_Init("#version 300 es");
             #endif
+            im_gui_io = ImGui::GetIO();
         }
 
         void handleEvent(const SDL_Event &event) {

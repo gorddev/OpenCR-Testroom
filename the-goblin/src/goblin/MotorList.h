@@ -5,6 +5,15 @@
 #include <DynamixelWorkbench.h>
 
 namespace gobin {
+    constexpr float motor_pi = 3.14159;
+
+    int32_t radian_to_pos(float radian) {
+        while (radian < 0) {
+            radian += 2*motor_pi;
+        }
+        return invar::pos_max * static_cast<i32>(radian/(2*motor_pi));
+    }
+
     /// Manages finding, storing, verifying, and reassigning motors and their ids.
     class MotorList {
     private:
@@ -17,6 +26,7 @@ namespace gobin {
                 motorArr[motor_count].id = motor_id;
                 motorArr[motor_count].model_num = model_num;
                 motorArr[motor_count].setJointMode(invar::vel_max, invar::acc_rate);
+                //motorArr[motor_count].setPosition(radian_to_pos(motorArr[motor_count].getRadians()));
                 motor_count++;
 
             }
@@ -62,6 +72,8 @@ namespace gobin {
                     CRPrint("found motor: "); CRPrint(id);
                     // if we find the motor, add it to our list of found motors.
                     addMotor(id, model_num);
+
+                    workbench::wb.itemRead(4, nullptr, nullptr);
                 }
             }
 
