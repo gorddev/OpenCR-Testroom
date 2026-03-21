@@ -25,7 +25,17 @@ namespace gobin {
 
         explicit GoblinController(const char windowName[], GoblinBrain& core)
             : InfoPanel(windowName, gan::WindowFloatOnTop | gan::WindowTransparent | gan::WindowResizable),
-                core(core) { }
+                core(core) {
+
+            float scale_factor = 1.5f;
+            ImFontConfig config;
+            config.SizePixels = roundf(13.0f * scale_factor);
+            im_gui_io.Fonts->AddFontDefault(&config);
+
+            ImGuiStyle& style = ImGui::GetStyle();
+            style.ScaleAllSizes(scale_factor);
+
+        }
 
 
         void display() {
