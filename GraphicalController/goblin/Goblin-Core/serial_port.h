@@ -5,7 +5,7 @@
 #include "errors/gan_log.hpp"
 #include "serial/serial.h"
 #include <array>
-
+#include "GoblinLog.h"
 
 /* Created by Gordie Novak on 3/16/26.
  * Purpose: 
@@ -17,59 +17,71 @@ namespace gobin {
 
     class serial_port {
     private:
-        std::string path;
-        std::unique_ptr<serial::Serial> port;
+        std::string path{};
+        std::unique_ptr<serial::Serial> port = nullptr;
         std::array<uint8_t, 128> buffer{};
 
         uint16_t current_command_data_size = false;     //< Whether the serial port knows how large a command will be yet.
         uint8_t has_command_ready = false;              //< Whether the serial port has a command ready for popping.
         uint8_t has_command_header = false;             //< Whether the command header has been found yet. ('~')
         uint8_t bytes_received = 0;
+        bool is_connected = false;
 
-
-        serial_port(const char port[], uint64_t baudrate)
-            : port(std::make_unique<serial::Serial>(port, baudrate, serial::Timeout::simpleTimeout(1000)))
-            , path(port){}
     public:
+        serial_port() = default;
 
     /* ********************************************************** */
         /** serial_port make function
          * @param port A string giving the absolute path to the port of the serial port you want to access.
          * @param baudrate The baudrate of the device you want to connect to.
+         * @param log The log to write output/
          * @return A full serial port if successful, a @code std::nullopt@endcode if not.
          */
-        static std::optional<serial_port> make(const char port[], uint64_t baudrate) {
-
+        bool open(const char port[], uint64_t baudrate, GoblinLog& log) {
             try {
-                serial_port serial(port, baudrate);
-
+                this->port = std::make_unique<serial::Serial>(port, baudrate);
                 #ifdef __WIN32__
                 serial.port->setDTR(true);
                 serial.port->setRTS(true);
                 #endif
-
-                if (serial.port->isOpen()) {
-                    printf("Initialization of port %s @%llu successful.\n", port, baudrate);
+                if (this->port->isOpen()) {
+                    std::string p = port;
+                    if (p.length() > 8) {
+                        p = p.substr(0, 8) + "...";
+                    }
+                    log.record("Connected to ", p.c_str(), " [", baudrate, "]");
+                    path = port;
                 } else {
-                    std::cerr << "Failed to open port " << port << std::endl;
-                    throw std::runtime_error("Port not opened correctly.");
-                }
-
-                std::optional<serial_port> opt;
-                opt.emplace(std::move(serial));
-                return opt;
-
+                    log.record("Failed to open port ", port, ". No error given by wjwwood serial library.");
+                    return false;
+                } is_connected = true;
+                return true;
             } catch (serial::IOException& e) {
-                gan::GAN_WriteLog("serial_port::make()", "Failed to initialize port", port, " with baudrate ", baudrate,
-                    ". Serial Library gives error: \n", e.what());
-                return std::nullopt;
+                log.record("Failed to initialize port ", port, " with baudrate ", baudrate, ".\n", e.what());
             } catch (const std::exception& e) {
-                gan::GAN_WriteLog("serial_port::make()", "Failed to initialize port", port, " with baudrate ", baudrate,
-                    ". Given error: \n", e.what());
-                return std::nullopt;
+                log.record("Failed to initialize port ", port, " with baudrate ", baudrate, ".\n", e.what());
+            } return false;
+        }
+
+        bool close(GoblinLog* log = nullptr) {
+            if (is_connected) {
+                is_connected = false; //< set as disconnected no matter what.
+                path = "";
+                try {
+                    port->close();
+                    if (log != nullptr) log->record("Closed port ", path.c_str(), ".");
+                    return true;
+                } catch (serial::IOException& e) {
+                    if (log != nullptr) log->record("Disconnect from ", path.c_str(), "failed with error ", e.what());
+                    else throw;
+                    return false;
+                }
             }
-            gan::GAN_WriteLog("serial_port::make()", "__unreachable__");
-            return std::nullopt;
+            return false;
+        }
+
+        [[nodiscard]] bool is_open() const {
+            return is_connected;
         }
 
     /* ********************************************************** */

@@ -1,32 +1,19 @@
+#define GOBLIN_DESKTOP
+// #define GOBLIN_PI
 
-#include <fstream>
-#include <filesystem>
 #include "SDL_API/SDL_API.h"
 
 #include "goblin/GoblinUI/GoblinController.hpp"
 #include "goblin/Goblin-Core/GoblinBrain.hpp"
-#include "Goblin-Core/VerifyPort.hpp"
+#include "Goblin-Core/Verify_Goblin.hpp"
 #include "SDL_API/window/Window.hpp"
 
 
 int main() {
 
-    std::cout << "===============================\n"
-                 "==|    Goblin Controller    |==\n"
-                 "-------------------------------\n";
+    gan::files::set_assets_folder("assets");
 
-    // try to get our goblin
-    auto opt = verifyPort();
-    if (opt == std::nullopt) {
-        std::cout << "~exiting program...\n";
-        return 0;
-    }
-    gobin::GoblinBrain core = std::move(opt.value());
-
-    std::cout << "================================\n"
-                 "==| Initializing GController |==\n"
-                 "-------------------------------\n";
-
+    gobin::GoblinBrain core;
     SDL_Init(SDL_INIT_VIDEO);
     gobin::GoblinController controller("Goblin Goblin", core);
 
@@ -34,6 +21,7 @@ int main() {
 
     bool running = true;
     while (running) {
+
         // Process events.
         while (SDL_PollEvent(&e)) {
             controller.handleEvent(e);

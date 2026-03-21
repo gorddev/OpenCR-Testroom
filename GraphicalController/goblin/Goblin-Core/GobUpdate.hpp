@@ -1,7 +1,7 @@
 #pragma once
-#include <iostream>
 
 #include "gobdef.h"
+#include <SDL3/SDL.h>
 
 namespace gobin {
 

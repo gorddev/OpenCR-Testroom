@@ -1,8 +1,8 @@
 #pragma once
 
-#include "../SDL_API.h"
-#include <backends/imgui_impl_sdl3.h>
-#include <backends/imgui_impl_opengl3.h>
+#include "../external/imgui/imgui.h"
+#include "../external/imgui/backends/imgui_impl_sdl3.h"
+#include"../external/imgui/backends/imgui_impl_opengl3.h"
 
 #ifdef __APPLE__
 #include "external/glad4/glad/glad.h"
@@ -20,23 +20,23 @@ namespace gan {
     class InfoPanel {
     protected:
         ImGuiContext* imgui_context;
-        ImGuiIO& im_gui_io;
+        ImGuiIO& imGuiIO;
         gan::Window window;
         dim2 sizeReq;
 
     public:
-        explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop)
-            : imgui_context(ImGui::CreateContext()), im_gui_io(ImGui::GetIO()),
-             window(Window::makeGL(windowName, {400, 800}, prop))
+        explicit InfoPanel(const char windowName[], WindowProperty prop = WindowFloatOnTop) : imgui_context(ImGui::CreateContext()),
+            window(Window::makeGL(windowName, {750, 500}, WindowTransparent | prop)), imGuiIO(ImGui::GetIO())
         {
-            ImGui_ImplSDL3_InitForOpenGL(window, window.getGlContext());
+            //SDL_SetWindowResizable(window, false);
+            ImGui_ImplSDL3_InitForOpenGL(window, window.getGLContext());
             #ifdef __APPLE__
             ImGui_ImplOpenGL3_Init("#version 410 core");
             #else
             std::cerr << glGetString(GL_VERSION) << std::endl;
             ImGui_ImplOpenGL3_Init("#version 300 es");
             #endif
-            im_gui_io = ImGui::GetIO();
+            std::cerr << glGetString(GL_VERSION) << std::endl;
         }
 
         void handleEvent(const SDL_Event &event) {
@@ -56,9 +56,9 @@ namespace gan {
         }
 
     protected:
-        [[nodiscard]] bool beginInfoPanel(const char name[], dim2 size) {
+        void beginInfoPanel() {
             if (window.isHidden())
-                return false;
+                return;
 
             ImGui::SetCurrentContext(imgui_context);
 
@@ -67,13 +67,6 @@ namespace gan {
             ImGui_ImplSDL3_NewFrame();
             ImGui::NewFrame();
 
-            setup_window();
-
-            return (ImGui::Begin(name, nullptr,
-                ImGuiWindowFlags_NoMove |
-                ImGuiWindowFlags_NoScrollbar |
-                ImGuiWindowFlags_AlwaysAutoResize
-            ));
         }
 
         void endInfoPanel() const {
@@ -104,7 +97,7 @@ namespace gan {
 
 
         void draw() const {
-            SDL_GL_MakeCurrent(window, window.getGlContext());
+            SDL_GL_MakeCurrent(window, window.getGLContext());
             ImGui::SetCurrentContext(imgui_context);
             ImGui::Render();
 

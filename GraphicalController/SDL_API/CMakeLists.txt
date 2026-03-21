@@ -5,10 +5,12 @@ set(CMAKE_CXX_STANDARD 20)
 
 option(SDL_Render_OpenGL_Core "Whether Embedded Systems lib is enabled" ON)
 
-if (LINUX OR (UNIX AND NOT APPLE))
+if (EMSCRIPTEN)
     set(SDL_Render_OpenGL_Core OFF)
-endif ()
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+endif()
 
+# enables/disables open gl
 if (SDL_Render_OpenGL_Core)
     message("Standard OpenGL 4.1 enabled. OpenGL_ES set to OFF.")
 else()
@@ -19,7 +21,7 @@ endif()
 include(FetchContent)
 
 # requires SDL3
-find_package(SDL3)
+find_package(SDL3 REQUIRED)
 
 ####################
 # FetchContent Below
@@ -43,7 +45,7 @@ endif()
 ####################
 
 #############################
-# Dear SDL_API_ImGui
+# Dear ImGui
 FetchContent_Declare(
     imgui
     GIT_REPOSITORY https://github.com/ocornut/imgui.git
@@ -52,7 +54,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(imgui)
 #############################
 
-add_library(SDL_API_ImGui STATIC
+add_library(ImGui STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/imgui.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/imgui_demo.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/imgui_draw.cpp
@@ -62,33 +64,33 @@ add_library(SDL_API_ImGui STATIC
     ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/backends/imgui_impl_opengl3.cpp
 )
 
-target_include_directories(SDL_API_ImGui PRIVATE
+target_include_directories(ImGui PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui/backends
     ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui
 )
 
-target_link_libraries(SDL_API_ImGui PRIVATE
+target_link_libraries(ImGui PRIVATE
     SDL3::SDL3
 )
 
-# End SDL_API_ImGui compilation
+# End ImGui compilation
 
 #########################
 # Glad Compilation
 #########################
 
 if(SDL_Render_OpenGL_Core)
-    add_library(SDL_API_GLAD STATIC
+    add_library(GLAD STATIC
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad4/glad/glad.c
     )
-    target_include_directories(SDL_API_GLAD PRIVATE
+    target_include_directories(GLAD PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad4
     )
 else()
-    add_library(SDL_API_GLAD STATIC
+    add_library(GLAD STATIC
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad_es/glad/glad.c
     )
-    target_include_directories(SDL_API_GLAD PRIVATE
+    target_include_directories(GLAD PRIVATE
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad_es
     )
 endif()
@@ -101,17 +103,16 @@ add_library(SDL_API
    window/Window.cpp
 )
 
-target_include_directories(SDL_API PRIVATE
+target_include_directories(SDL_API PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/SDL_API
     ${CMAKE_CURRENT_SOURCE_DIR}/external
-    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_SOURCE_DIR}/external/imgui
 )
 
 target_link_libraries(SDL_API PUBLIC
     SDL3::SDL3
-    SDL_API_ImGui
-    SDL_API_GLAD
+    ImGui
+    GLAD
 )
 
 
@@ -126,25 +127,16 @@ else()
 endif()
 
 
-if(NOT SDL_API_OpenGL_ES)
+if(SDL_API_OpenGL_ES)
     message("Including glad4 directories")
-    target_include_directories(SDL_API PRIVATE
+    target_include_directories(SDL_API PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad4
     )
 else()
     message("Including glades directories")
-    target_include_directories(SDL_API PRIVATE
+    target_include_directories(SDL_API PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/external/glad_es
     )
 endif ()
-
-
-
-
-
-
-
-
-
 
 

@@ -10,14 +10,14 @@ namespace serial {
 
         while (!Serial);
 
-        CRPrint("--Serial Connected--");
+        CRPrint("Serial Connected");
     }
 
     inline bool arduino_ping() {
         static u32 i = 0;
         if (!Serial) return false;
         if (i++ >= BAUDRATE*10) {
-            CRPrint("--Ping: Process Alive--");
+            CRPrint("Ping: Process Alive");
             i = 0;
         } return true;
     }
@@ -26,10 +26,18 @@ namespace serial {
         for (auto& m : g.motors)
             m.disableTorque();
         while (!Serial);
-        CRPrint("--Serial Reconnected--");
+        CRPrint("Serial Reconnected");
         for (auto& m : g.motors)
             m.enableTorque();
         g.motors.sendSerializedMotors(true);
+    }
 
+    inline void arduino_hard_reset() {
+        CRPrint("{Performing Hard Reset}");
+        CRCommand({gobin::COM_INFO, gobin::T_RESET}, nullptr, 0);
+        delay(1000);
+
+        NVIC_SystemReset();
+        CRExit();
     }
 }

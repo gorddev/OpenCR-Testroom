@@ -112,6 +112,7 @@ namespace gan {
 
         GAN_RawAppendLog() << src << "}\n";
         (..., (GAN_RawAppendLog() << args));
+        GAN_RawAppendLog() << "\n";
 
         internal_log_handler::increment_call_chain_count();
     }

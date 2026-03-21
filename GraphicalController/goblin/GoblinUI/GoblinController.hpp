@@ -1,11 +1,13 @@
 #pragma once
 
 #include "../Goblin-Core/GoblinBrain.hpp"
-#include "imgui-integration/InfoPanel.hpp"
+#include "SDL_API/imgui-integration/InfoPanel.hpp"
 #include "Motors/MotorMenu.hpp"
-#include "Motors/MotorSelector.hpp"
 #include "Serializer/SerializeInterface.hpp"
 #include "SDL_API/window/Window.hpp"
+#include "GoblinConnectUI.hpp"
+#include "GoblinConsoleUI.hpp"
+#include "Style/GobUI_Style.h"
 
 /* Created by Gordie Novak on 3/15/26.
  * Purpose: 
@@ -18,50 +20,91 @@ namespace gobin {
     struct GoblinController : gan::InfoPanel {
 
         GoblinBrain& core;
+        GobUI_Style style;
 
-        SerializeInterface<300> serializer_ui;
-        MotorSelector motor_ui;
+        GoblinConnectUI connectUI;
         MotorMenu motor_menu;
+
 
         explicit GoblinController(const char windowName[], GoblinBrain& core)
             : InfoPanel(windowName, gan::WindowFloatOnTop | gan::WindowTransparent | gan::WindowResizable),
-                core(core) {
+                core(core), connectUI(core.brain_log) {
 
-            float scale_factor = 1.5f;
+            g_style.body_font = imGuiIO.Fonts->AddFontFromFileTTF(
+                (gan::files::assets()/"gob_body_font.ttf").c_str(),
+                24.f);
+
+            g_style.header_font = imGuiIO.Fonts->AddFontFromFileTTF(
+                (gan::files::assets()/"gob_header_font.ttf").c_str(),
+                32.f);
+
+            g_style.input_font = imGuiIO.Fonts->AddFontFromFileTTF(
+                (gan::files::assets()/"gob_input_font.ttf").c_str(),
+                20.f);
+
+            ImFontConfig config;
+            config.OversampleH = 3; // Increases horizontal resolution
+            config.OversampleV = 1;
+
+            g_style.console_font = imGuiIO.Fonts->AddFontFromFileTTF(
+                (gan::files::assets()/"gob_console_font.ttf").c_str(),
+                16.f, &config);
+
+
+
+            /*
+            imGuiIO.Fonts->AddFontDefault();
+
             ImFontConfig config;
             config.SizePixels = roundf(13.0f * scale_factor);
-            im_gui_io.Fonts->AddFontDefault(&config);
-
-            ImGuiStyle& style = ImGui::GetStyle();
-            style.ScaleAllSizes(scale_factor);
+            imGuiIO.Fonts->AddFontDefault(&config);
+            */
 
         }
 
 
         void display() {
-            pushGoblinStyle();
-            if (beginInfoPanel("Goblin Control Panel", {260, 400}))
+            g_style.pushGobDefault();
+            beginInfoPanel();
+
+            g_style.pushHeaderFont();
+
+            bool b = ImGui::Begin("Goblin Control Panel", nullptr,
+                ImGuiWindowFlags_NoMove |
+                ImGuiWindowFlags_NoScrollbar |
+                ImGuiWindowFlags_AlwaysAutoResize
+            );
+
+            g_style.popHeaderFont();
+            if (b) {
                 render_buttons();
-            popGoblinStyle();
+            }
+
+
+            g_style.popGobDefault();
+
             endInfoPanel();
         }
     private:
 
         void render_buttons() {
 
-            gan::fstring<300> str_serial;
-            str_serial.resize<300>();
-            if (serializer_ui.button(str_serial, core.port.get_path().c_str())) {
-                ImGui::SetKeyboardFocusHere(-1);
-                size_t len = strlen(str_serial.data());
-                serializer_ui.last_byte_count = len;
-                core.port.write((uint8_t*)str_serial.data(), len);
-            }
             ImGui::Separator();
 
-            // Velocity Slider
-            motor_menu.update(core);
+            connectUI.button(core);
 
+            ImGui::BeginGroup();
+            GoblinConsoleUI::displayConsole("Local Console", core.brain_log);
+            ImGui::EndGroup();
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            GoblinConsoleUI::displayConsole("CR Console", core.open_cr_log);
+            ImGui::EndGroup();
+
+            if (core.is_connected()) {
+                // Velocity Slider
+                motor_menu.update(core);
+            }
             // Checkbox
             //ImGui::Checkbox("Enable/Disable Torque", &core.torque);
             ImGui::Text("%s", port_record.c_str());

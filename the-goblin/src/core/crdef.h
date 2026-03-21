@@ -2,6 +2,8 @@
 
 #ifdef OPEN_CR
 #include <DynamixelWorkbench.h>
+#else
+#include <cstdint>
 #endif
 
 typedef uint8_t u8;
@@ -17,5 +19,5 @@ typedef int64_t i64;
 typedef float f32;
 typedef double f64;
 
-typedef uint8_t b8;
+typedef bool b8;
 typedef uint32_t b32;

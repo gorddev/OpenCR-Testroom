@@ -63,6 +63,7 @@ namespace gan {
         void setWidth(uint32_t width) const;    ///< Sets the width of the window (in pixels).
         void setHeight(uint32_t height) const;  ///< Sets the height of the window (in pixels).
         void setPosition(vec2 pos) const;       ///< Sets the position of the window (in pixels)
+        void setGLClearColor(float r, float g, float b, float a) const noexcept;
         // *********************
         void setFullscreen();                   ///< Sets the window to fullscreen mode.
         void setWindowed();                     ///< Sets the window into "Windowed" mode.
@@ -101,7 +102,9 @@ namespace gan {
         [[nodiscard]] uint32_t  getHeight() const noexcept;         ///< Returns the height of the current window (in pixels)
         [[nodiscard]] vec2      getPosition() const noexcept;       ///< Returns the position of the current window {x, y} (in pixels)
         [[nodiscard]] uint32_t  getWindowId() const noexcept;
-        [[nodiscard]] SDL_GLContext getGlContext() const noexcept;  ///< Returns GLContext object
+        [[nodiscard]] SDL_GLContext getGLContext() const noexcept;  ///< Returns GLContext object
+        [[nodiscard]] dim2      getWindowPixelSize() const noexcept;
+
 
         void on_resize(SDL_Event& e) noexcept;
 

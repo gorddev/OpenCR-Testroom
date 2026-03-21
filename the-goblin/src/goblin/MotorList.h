@@ -69,7 +69,6 @@ namespace gobin {
 
             for (i8 id = 0; id < invar::max_motor_id; id++) {
                 if (workbench::wb.ping(id, &model_num, &workbench::cr_log)) {
-                    CRPrint("found motor: "); CRPrint(id);
                     // if we find the motor, add it to our list of found motors.
                     addMotor(id, model_num);
 

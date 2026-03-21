@@ -1,12 +1,12 @@
 #pragma once
 
-
 #include <vector>
 #include <gobdef.h>
 
 #include "Goblin-Core/GoblinBrain.hpp"
 #include "../the-goblin/src/goblin/Invariants.h"
-#include "GoblinUI/GoblinImGui.h"
+#include "../Style/GobUI_Colors.h"
+#include "GoblinUI/Style/GobUI_Style.h"
 
 /* Created by Gordie Novak on 3/19/26.
  * Purpose: 
@@ -20,6 +20,16 @@ namespace gobin {
         void update(GoblinBrain& core) {
 
             ImGui::SetNextItemOpen(true, ImGuiCond_FirstUseEver);
+
+            static bool torque = true;
+            std::string t_Str = std::string("Torque: ") + ((torque) ? "Enabled" : "Disabled");
+            if (ImGui::Checkbox(t_Str.c_str(), &torque)) {
+                for (auto& m : core.motors) {
+                    m.torque = torque;
+                    m.flagForUpdate();
+                }
+            }
+
             if (ImGui::CollapsingHeader("Motors")) {
 
                 ImGui::PushID("motselect");
@@ -29,13 +39,13 @@ namespace gobin {
                     if (selection == -2) selection = 0;
                     ImGui::SetNextItemWidth(50);
                     if (last_selection == m.index) {
-                        pushGoblinSelectedButton();
-                        if (ImGui::Button(motorString(core.getMotor(m.index).motor_id).c_str())) {
+                        g_style.pushSelectedButton();
+                        if (ImGui::Button(motorString(core.getMotorCore(m.index).motor_id).c_str())) {
                             selection = -1;
                         }
-                        popGoblinSelectedButton();
+                        g_style.popSelectedButton();
                     } else {
-                        if (ImGui::Button(motorString(core.getMotor(m.index).motor_id).c_str()))
+                        if (ImGui::Button(motorString(core.getMotorCore(m.index).motor_id).c_str()))
                             selection = m.index;
                     }
                     ImGui::SameLine();
@@ -57,7 +67,7 @@ namespace gobin {
 
         void motorInst(GoblinBrain& core, MotorInterface& inst) {
 
-            auto& m = core.getMotor(inst.index);
+            auto& m = core.getMotorCore(inst.index);
 
             /* —————————————————————— */
             ImGui::Separator();
@@ -132,7 +142,7 @@ namespace gobin {
 
             bool prevent_reassign = false;
             for (u16 i = 0; i < core.motors.size(); i++) {
-                if (core.getMotor(i).motor_id == inst.motor_id) {
+                if (core.getMotorCore(i).motor_id == inst.motor_id) {
                     prevent_reassign = true;
                     break;
                 }

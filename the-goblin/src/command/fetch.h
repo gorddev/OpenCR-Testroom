@@ -1,6 +1,7 @@
 #pragma once
 #include "../goblin/Goblin.h"
 #include "packets.h"
+#include "../core/crconnect.h"
 
 void loop();
 
@@ -126,11 +127,17 @@ namespace gobin {
         /* ****************** Torque **************************** */
         static void torque(Goblin& g, const Command& c) {
             if (c.type == COM_SET) {
-                CRPrint(*(g.port.data()));
                 if (Motor* mot = g.motors.at(c.motor_id)) {
                     mot->setTorque(*g.port.data());
                 } else CRError(FETCH_INVALID_MOTOR_ID, c.motor_id);
             } else CRError(INVALID_COMMAND_TYPE_SET_TORQUE, c.type);
+        }
+
+        /* ****************** Reset **************************** */
+        static void reset(Goblin& g) {
+            for (auto& m: g.motors) {
+                m.disableTorque();
+            } serial::arduino_hard_reset();
         }
     };
 }

@@ -2,12 +2,14 @@
 
 #include "src/command/fetch.h"
 #include "src/core/crconnect.h"
+#include "music.h"
 
 its_goblin_time(goblin);
 
 using namespace gobin;
 
 void setup() {
+  music::mary_had_lamb_meat();
   // first we wait for a serial connection.
   serial::arduino_connect();
   // initialize the goblin
@@ -24,6 +26,8 @@ void loop() {
   if (!serial::arduino_ping()) {
     serial::arduino_await_reconnect(goblin);
   }
+
+  delay(20);
 
   while (goblin.port.fetch()) {
     Command c = goblin.port.command();
@@ -44,14 +48,17 @@ void loop() {
     case T_MOTOR_ID: //< if the serial requests to change a motor id.
       fetch::motor_id(goblin, c);
       break;
-    case T_MOTOR_JOINT_MODE:
+    case T_MOTOR_JOINT_MODE: //< switch a motor to joint mode
       fetch::joint_mode(goblin, c);
       break;
-    case T_MOTOR_WHEEL_MODE:
+    case T_MOTOR_WHEEL_MODE: //< switch a motor to wheel mode
       fetch::wheel_mode(goblin, c);
       break;
-    case T_MOTOR_TORQUE:
+    case T_MOTOR_TORQUE:  //< disable/enable the torque on a motor
       fetch::torque(goblin, c);
+      break;
+    case T_RESET: //< reset the arduino board.
+      fetch::reset(goblin);
       break;
     default:
       CRError(UNKNOWN_COMMAND_TYPE, c.type);

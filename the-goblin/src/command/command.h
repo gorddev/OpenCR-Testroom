@@ -36,6 +36,7 @@ enum ComTarget : uint8_t {
   T_MOTOR_ID = 'i',
   T_MOTOR_LIST = 'l',
   T_MOTOR_TORQUE = 't',
+  T_RESET = 'r',
 };
 
 // Contains additional information about the data

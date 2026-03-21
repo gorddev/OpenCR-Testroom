@@ -670,7 +670,7 @@ static FT_Error ImGuiLunasvgPortPresetSlot(FT_GlyphSlot slot, FT_Bool cache, FT_
 #else
     lunasvg::Box box = state->svg->box();
 #endif
-    double scale = min(metrics.x_ppem / box.w, metrics.y_ppem / box.h);
+    double scale = std::min(metrics.x_ppem / box.w, metrics.y_ppem / box.h);
     double xx = (double)document->transform.xx / (1 << 16);
     double xy = -(double)document->transform.xy / (1 << 16);
     double yx = -(double)document->transform.yx / (1 << 16);

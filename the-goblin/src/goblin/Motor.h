@@ -109,7 +109,6 @@ namespace gobin {
             if (!workbench::wb.jointMode(id, vel, acc)) {
                 CRError(JOINT_MODE_SET_FAIL, id);
             } else {
-                CRPrint("Setting joint mode");
                 mode = JOINT_MODE;
             }
         }
@@ -118,7 +117,6 @@ namespace gobin {
             if (!workbench::wb.wheelMode(id, vel)) {
                 CRError(WHEEL_MODE_SET_FAIL, id);
             } else {
-                CRPrint("Setting wheel mode.");
                 mode = WHEEL_MODE;
             }
         }

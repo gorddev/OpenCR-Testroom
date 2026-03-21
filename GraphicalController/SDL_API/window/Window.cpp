@@ -2,7 +2,7 @@
 
 #include "../types/vec2.hpp"
 
-#include "../apidef.h"
+#include <apidef.h>
 
 #ifdef GAN_DEBUG
 #include <iostream>
@@ -75,6 +75,11 @@ Window Window::makeGL(const char windowName[], dim2 dim, WindowProperty flags)
     SDL_GL_MakeCurrent(sdl_window, gl_context);
     SDL_GL_SetSwapInterval(1);
 
+    int x, y;
+    SDL_GetWindowSizeInPixels(sdl_window, &x, &y);
+
+    glViewport(0, 0, x, y);
+    glClearColor(0.1f, 0.1f, 0.1f, 0.3f);
     return Window {
         sdl_window,
         flags,
@@ -92,10 +97,10 @@ Window::~Window() {
 
 void Window::normalizeMousePosToWindow(float& x, float& y) const {
     int wx, wy;
-    SDL_GetWindowSize(sdl_window, &wx, &wy);
+    SDL_GetWindowSizeInPixels(sdl_window, &wx, &wy);
 
-    x = (x-wx)/dimensions.w;
-    y = ((y-wy)/dimensions.h);
+    x = (x-wx/2.f)/dimensions.w;
+    y = ((y-wy/2.f)/dimensions.h);
 }
 
 Window::operator SDL_Window*() const noexcept {
@@ -261,8 +266,21 @@ uint32_t Window::getWindowId() const noexcept {
     return id;
 }
 
-SDL_GLContext Window::getGlContext() const noexcept {
+SDL_GLContext Window::getGLContext() const noexcept {
     return gl_context;
+}
+
+dim2 Window::getWindowPixelSize() const noexcept {
+    int x, y;
+    SDL_GetWindowSizeInPixels(sdl_window, &x, &y);
+    return {x, y};
+}
+
+void Window::setGLClearColor(float r, float g, float b, float a) const noexcept {
+    if (gl_context) {
+        SDL_GL_MakeCurrent(sdl_window, gl_context);
+        glClearColor(r, g, b, a);
+    }
 }
 
 void Window::on_resize(SDL_Event& e) noexcept {

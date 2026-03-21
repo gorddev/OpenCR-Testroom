@@ -27,43 +27,6 @@ if(NOT SDL3_FOUND)
     #############################
 endif()
 
-#############################
-# Dear ImGui
-FetchContent_Declare(
-    imgui
-    GIT_REPOSITORY https://github.com/ocornut/imgui.git
-    GIT_TAG master
-)
-FetchContent_MakeAvailable(imgui)
-#############################
-
-
-#########################
-# ImGui Compilation Below
-#########################
-
-add_library(ImGui STATIC
-    ${imgui_SOURCE_DIR}/imgui.cpp
-    ${imgui_SOURCE_DIR}/imgui_demo.cpp
-    ${imgui_SOURCE_DIR}/imgui_draw.cpp
-    ${imgui_SOURCE_DIR}/imgui_tables.cpp
-    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdl3.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_sdlrenderer3.cpp
-    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp
-)
-
-target_include_directories(ImGui PRIVATE
-    ${imgui_SOURCE_DIR}/backends
-    ${imgui_SOURCE_DIR}
-)
-
-target_link_libraries(ImGui PRIVATE
-    SDL3::SDL3
-)
-
-# End ImGui compilation
-
 #########################
 # Serial Compilation Below
 #########################
@@ -96,37 +59,12 @@ target_include_directories(Serial PRIVATE
     ${CMAKE_SOURCE_DIR}/external/serial/include
 )
 
-
-
-#########################
-# Glad Compilation
-#########################
-
-
-
-if(NOT OpenGL_ES)
-add_library(GLAD STATIC
-    ${CMAKE_SOURCE_DIR}/external/glad4/glad/glad.c
-)
-target_include_directories(GLAD PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/glad4
-)
-else()
-add_library(GLAD STATIC
-    ${CMAKE_SOURCE_DIR}/external/glad_es/glad/glad.c
-)
-target_include_directories(GLAD PRIVATE
-    ${CMAKE_SOURCE_DIR}/external/glad_es
-)
-endif()
-
-
-
 #########################
 # Main compilation
 #########################
 add_executable(GraphicalController
     main.cpp
+    goblin/Goblin-Core/GoblinBrain.cpp
 )
 
 target_include_directories(GraphicalController PRIVATE
@@ -142,11 +80,9 @@ add_subdirectory(SDL_API)
 
 target_link_libraries(GraphicalController
     SDL3::SDL3
-    ImGui
     Serial
     SDL_API
 )
-
 
 if(NOT OpenGL_ES)
     target_compile_options(GraphicalController PRIVATE

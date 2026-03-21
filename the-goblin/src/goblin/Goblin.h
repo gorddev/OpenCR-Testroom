@@ -14,9 +14,10 @@ namespace gobin {
     public:
         MotorList motors{};
         serial_receiver port;
+        b8 sleeping = false;
 
+        /// Initializes the DXL workbench & finds all available motors.
         b8 init() {
-
             if (initialized) {
                 CRError(DXL_WORKBENCH_ALREADY_INITIALIZED, initialized);
             } else if (!wb.init(DEVICE_NAME, BAUDRATE, &log)) {
