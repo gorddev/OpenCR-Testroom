@@ -25,7 +25,7 @@ namespace gobin {
             }
         }
 
-        void button(GoblinBrain& core) {
+        void button(GoblinCore& core) {
 
             if (!core.is_connected()) {
                 try_to_connect(core);
@@ -35,7 +35,7 @@ namespace gobin {
 
         }
 
-        void try_to_connect(GoblinBrain& core) {
+        void try_to_connect(GoblinCore& core) {
             ImGui::Separator();
             ImGui::Text("Connect to Port: ");
             g_style.pushInputFont();
@@ -75,7 +75,7 @@ namespace gobin {
             ImGui::Separator();
         }
 
-        void try_disconnect(GoblinBrain& core) {
+        void try_disconnect(GoblinCore& core) {
             ImGui::Separator();
 
             ImGui::Text("Connected to Port: ");

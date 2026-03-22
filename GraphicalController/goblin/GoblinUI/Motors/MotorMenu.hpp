@@ -3,7 +3,7 @@
 #include <vector>
 #include <gobdef.h>
 
-#include "Goblin-Core/GoblinBrain.hpp"
+#include "Goblin-Core/GoblinCore.hpp"
 #include "../the-goblin/src/goblin/Invariants.h"
 #include "../Style/GobUI_Colors.h"
 #include "GoblinUI/Style/GobUI_Style.h"
@@ -17,7 +17,7 @@ namespace gobin {
     struct MotorMenu {
         i64 selection = -2;
 
-        void update(GoblinBrain& core) {
+        void update(GoblinCore& core) {
 
             ImGui::SetNextItemOpen(true, ImGuiCond_FirstUseEver);
 
@@ -75,7 +75,7 @@ namespace gobin {
             return std::string("M") + std::to_string(motor_id);
         }
 
-        void motorInst(GoblinBrain& core, MotorInterface& inst) {
+        void motorInst(GoblinCore& core, MotorInterface& inst) {
 
             auto& m = core.getMotorCore(inst.index);
 

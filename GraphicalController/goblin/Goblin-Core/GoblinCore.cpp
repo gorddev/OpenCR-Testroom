@@ -1,10 +1,10 @@
-#include "GoblinBrain.hpp"
+#include "GoblinCore.hpp"
 
 #include "Verify_Goblin.hpp"
 
 using namespace gobin;
 
-GoblinBrain::GoblinBrain(const char port[], uint64_t baudrate) {
+GoblinCore::GoblinCore(const char port[], uint64_t baudrate) {
     if (port != nullptr) {
         this->port.open(port, baudrate, this->brain_log);
     }
@@ -12,13 +12,13 @@ GoblinBrain::GoblinBrain(const char port[], uint64_t baudrate) {
 
 /* ********************************************** */
 
-void GoblinBrain::update() {
+void GoblinCore::update() {
     updater.tick();
     fetch();
     send();
 }
 
-void GoblinBrain::fetch() {
+void GoblinCore::fetch() {
     if (!port.is_open())
         return;
 
@@ -32,7 +32,7 @@ void GoblinBrain::fetch() {
             case COM_ERROR:
                 open_cr_log.record(".CR › Error!\n=| ",
                     com::err_str(com::datacast<Error>(port.data())),
-                    "\n=| Spec: {", port.command().reserved, "}");
+                    "\n=| Spec: {", com::datacast<Error>(port.data()).error_id, "}");
                 break;
                 /* --------------- */
             case COM_STRING:
@@ -63,7 +63,7 @@ void GoblinBrain::fetch() {
     }
 }
 
-void GoblinBrain::send() {
+void GoblinCore::send() {
     if (!port.is_open())
         return;
 
@@ -72,11 +72,6 @@ void GoblinBrain::send() {
 
             if (!motors[j].needs_updating) continue;
             motors[j].needs_updating = false;
-
-
-            if (motors[j].torque != internal_motors[j].torque) { //< torque
-                setTorque(j, motors[j].torque);
-            }
 
             if (motors[j].mode == WHEEL_MODE) {
                 if (motors[j].mode != internal_motors[j].mode) { //< mode
@@ -89,12 +84,19 @@ void GoblinBrain::send() {
                 }
             } else if (motors[j].mode == JOINT_MODE) {
                 if (motors[j].mode != internal_motors[j].mode) { //< mode
+                    std::cerr << "Setting to joint mode!" << motors[j].index << ", " << motors[j].motor_id << std::endl;
                     setJointMode(j);
                     setPosition(j, internal_motors[j].pos);
                     motors[j].pos = internal_motors[j].pos;
                 } else if (motors[j].pos != internal_motors[j].pos) { //< position
+                    std::cerr << "we think it's already joint mode: " << motors[j].motor_id << std::endl;
                     setPosition(j, motors[j].pos);
                 }
+            }
+
+
+            if (motors[j].torque != internal_motors[j].torque) { //< torque
+                setTorque(j, motors[j].torque);
             }
         }
     } catch (std::exception& e) {
@@ -106,7 +108,7 @@ void GoblinBrain::send() {
 
 /* ---------- MotorID ------------ */
 
-void GoblinBrain::setMotorID(const uint8_t motor_index, const uint8_t new_motor_index) {
+void GoblinCore::setMotorID(const uint8_t motor_index, const uint8_t new_motor_index) {
     for (auto& m : internal_motors) {
         if (m.motor_id == new_motor_index) {
             return;
@@ -118,43 +120,43 @@ void GoblinBrain::setMotorID(const uint8_t motor_index, const uint8_t new_motor_
 
 }
 
-void GoblinBrain::requestMotorScan() {
+void GoblinCore::requestMotorScan() {
     port.write(com::bitcast(Command{COM_GET, T_MOTOR_LIST}));
 }
 
-void GoblinBrain::queryMotors() {
+void GoblinCore::queryMotors() {
     port.write(com::bitcast(Command{COM_STATUS, T_MOTOR_LIST}));
 }
 
-bool GoblinBrain::openPort(const char port[], uint64_t baudrate) {
+bool GoblinCore::openPort(const char port[], uint64_t baudrate) {
     if (this->port.open(port, baudrate, brain_log)) {
         data::writeConfigData(port, baudrate, brain_log);
         return true;
     } return false;
 }
 
-void GoblinBrain::closePort() {
+void GoblinCore::closePort() {
     port.close(&brain_log);
     open_cr_log.clear();
 }
 
-void GoblinBrain::resetArduino() {
+void GoblinCore::resetArduino() {
     port.write(com::bitcast(Command{COM_SET, T_RESET}));
 }
 
-bool GoblinBrain::is_connected() {
+bool GoblinCore::is_connected() {
     return port.is_open();
 }
 
-const std::string& GoblinBrain::getPortPath() {
+const std::string& GoblinCore::getPortPath() {
     return port.get_path();
 }
 
-[[nodiscard]] const MotorCore& GoblinBrain::getMotorCore(const u8 motor_index) const {
+[[nodiscard]] const MotorCore& GoblinCore::getMotorCore(const u8 motor_index) const {
     return internal_motors[motor_index];
 }
 
-void GoblinBrain::flagAllMotorsForUpdate() {
+void GoblinCore::flagAllMotorsForUpdate() {
     for (auto& m : motors) {
         m.flagForUpdate();
     }
@@ -163,56 +165,56 @@ void GoblinBrain::flagAllMotorsForUpdate() {
 
 /* ---------- Modes ------------ */
 
-void GoblinBrain::setWheelMode(const uint8_t motor_index) {
+void GoblinCore::setWheelMode(const uint8_t motor_index) {
     port.write(com::bitcast(Command{COM_SET, T_MOTOR_WHEEL_MODE, internal_motors[motor_index].motor_id}));
     internal_motors[motor_index].mode = WHEEL_MODE;
 }
 
-void GoblinBrain::setJointMode(const uint8_t motor_index) {
+void GoblinCore::setJointMode(const uint8_t motor_index) {
     port.write(com::bitcast(Command{COM_SET, T_MOTOR_JOINT_MODE, internal_motors[motor_index].motor_id}));
     internal_motors[motor_index].mode = JOINT_MODE;
 }
 
 /* ---------- Velocity ------------ */
 
-void GoblinBrain::queryVelocity(const uint8_t motor_index) {
+void GoblinCore::queryVelocity(const uint8_t motor_index) {
     port.write(com::bitcast(Command{COM_GET, T_MOTOR_VELOCITY, internal_motors[motor_index].motor_id}));
 }
 
-void GoblinBrain::changeVelocity(const uint8_t motor_index, const int32_t d_velocity) {
+void GoblinCore::changeVelocity(const uint8_t motor_index, const int32_t d_velocity) {
     port.write(com::bitcast(Command{COM_CHANGE, T_MOTOR_VELOCITY, internal_motors[motor_index].motor_id}, d_velocity));
     internal_motors[motor_index].vel += d_velocity;
 }
 
-void GoblinBrain::setVelocity(const uint8_t motor_index, const int32_t velocity) {
+void GoblinCore::setVelocity(const uint8_t motor_index, const int32_t velocity) {
     port.write(com::bitcast(Command{COM_SET, T_MOTOR_VELOCITY, internal_motors[motor_index].motor_id}, velocity));
     internal_motors[motor_index].vel = velocity;
 }
 
 /* ---------- Position ------------ */
 
-void GoblinBrain::queryPosition(const uint8_t motor_index) {
+void GoblinCore::queryPosition(const uint8_t motor_index) {
     port.write(com::bitcast(Command{COM_GET, T_MOTOR_VELOCITY, internal_motors[motor_index].motor_id}));
 }
 
-void GoblinBrain::changePosition(const uint8_t motor_index, const int32_t d_position) {
+void GoblinCore::changePosition(const uint8_t motor_index, const int32_t d_position) {
     port.write(com::bitcast(Command{COM_CHANGE, T_MOTOR_VELOCITY, internal_motors[motor_index].motor_id}, d_position));
     internal_motors[motor_index].pos += d_position;
 }
 
-void GoblinBrain::setPosition(const uint8_t motor_index, const int32_t position) {
+void GoblinCore::setPosition(const uint8_t motor_index, const int32_t position) {
     port.write(com::bitcast(Command{COM_SET, T_MOTOR_POSITION, internal_motors[motor_index].motor_id}, position));
     internal_motors[motor_index].pos = position;
 }
 
 /* ---------- Torque ------------ */
-void GoblinBrain::setTorque(uint8_t motor_index, bool torque) {
+void GoblinCore::setTorque(uint8_t motor_index, bool torque) {
     port.write(com::bitcast(Command{COM_SET, T_MOTOR_TORQUE, internal_motors[motor_index].motor_id}, torque));
     internal_motors[motor_index].torque = torque;
 }
 
 /* ********************************************** */
-void GoblinBrain::unpack_motor_list(const Command& c) {
+void GoblinCore::unpack_motor_list(const Command& c) {
     bool overwrite = (c.type == COM_INFO);
 
     const auto dat = reinterpret_cast<const MotorPacket*>(port.data());

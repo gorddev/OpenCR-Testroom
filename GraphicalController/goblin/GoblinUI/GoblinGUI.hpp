@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Goblin-Core/GoblinBrain.hpp"
+#include "../Goblin-Core/GoblinCore.hpp"
 #include "SDL_API/imgui-integration/InfoPanel.hpp"
 #include "Motors/MotorMenu.hpp"
 #include "Serializer/SerializeInterface.hpp"
@@ -19,14 +19,14 @@ namespace gobin {
 
     struct GoblinGUI : gan::InfoPanel {
 
-        GoblinBrain& core;
+        GoblinCore& core;
         GobUI_Style style;
 
         GoblinConnectUI connectUI;
         MotorMenu motor_menu;
 
 
-        explicit GoblinGUI(const char windowName[], GoblinBrain& core)
+        explicit GoblinGUI(const char windowName[], GoblinCore& core)
             : InfoPanel(windowName, gan::WindowFloatOnTop | gan::WindowTransparent | gan::WindowResizable),
                 core(core), connectUI(core.brain_log) {
 

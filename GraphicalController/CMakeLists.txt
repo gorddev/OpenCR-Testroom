@@ -3,7 +3,11 @@ project(GraphicalController)
 
 set(CMAKE_CXX_STANDARD 20)
 
-set(OpenGL_ES OFF)
+if (LINUX)
+    set(OpenGL_ES ON)
+else()
+    set(OpenGL_ES OFF)
+endif()
 
 # we have to include fetch content to we get repos from git
 include(FetchContent)
@@ -64,7 +68,7 @@ target_include_directories(Serial PRIVATE
 #########################
 add_executable(GraphicalController
     main.cpp
-    goblin/Goblin-Core/GoblinBrain.cpp
+    goblin/Goblin-Core/GoblinCore.cpp
 )
 
 target_include_directories(GraphicalController PRIVATE

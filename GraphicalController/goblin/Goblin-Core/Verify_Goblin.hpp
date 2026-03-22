@@ -1,6 +1,7 @@
 #pragma once
 #include <fstream>
-#include "GoblinBrain.hpp"
+#include <filesystem>
+#include "GoblinCore.hpp"
 
 /* Created by Gordie Novak on 3/18/26.
  * Purpose: 

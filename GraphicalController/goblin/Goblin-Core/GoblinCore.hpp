@@ -15,14 +15,14 @@
 
 namespace gobin {
 
-    class GoblinBrain {
+    class GoblinCore {
     public:
         std::vector<MotorInterface> motors; ///< Motor interface objects interact with.
         GobUpdate updater;                  ///< Determines when we update shit.
         GoblinLog brain_log;                ///< Logs for the GoblinBrain.
         GoblinLog open_cr_log;              ///< Logs for the OpenCR board.
 
-        explicit GoblinBrain(const char port[] = nullptr, uint64_t baudrate = 1000000);
+        explicit GoblinCore(const char port[] = nullptr, uint64_t baudrate = 1000000);
 
     /* ********************************************** */
 
@@ -88,7 +88,7 @@ namespace gobin {
         std::vector<MotorCore> internal_motors;  ///< contains all of our motors.
         serial_port port;                       ///< The port through which we communicate with the arduino board
 
-        explicit GoblinBrain(serial_port port)
+        explicit GoblinCore(serial_port port)
             : port(std::move(port)) {}
     };
 }

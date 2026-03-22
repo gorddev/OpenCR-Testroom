@@ -56,7 +56,7 @@ namespace gobin {
         }
 
     private:
-        friend class GoblinBrain;
+        friend class GoblinCore;
         bool needs_updating = false;
     };
 }

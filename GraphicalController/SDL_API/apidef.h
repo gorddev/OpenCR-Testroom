@@ -14,6 +14,10 @@
 #endif
 
 #include <SDL3/SDL.h>
+#include "types/vec2.hpp"
+#include "types/dim2.hpp"
+#include "types/fstring.hpp"
+
 namespace gan {
     inline void ensure_SDL_init() {
         [[maybe_unused]] static bool b = SDL_Init(SDL_INIT_VIDEO);

@@ -8,6 +8,8 @@ option(SDL_Render_OpenGL_Core "Whether Embedded Systems lib is enabled" ON)
 if (EMSCRIPTEN)
     set(SDL_Render_OpenGL_Core OFF)
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
+elseif(LINUX)
+    set(SDL_Render_OpenGL_Core OFF)
 endif()
 
 # enables/disables open gl

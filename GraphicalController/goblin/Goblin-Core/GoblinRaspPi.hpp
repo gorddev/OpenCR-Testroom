@@ -4,7 +4,7 @@
  * Purpose:
  */
 
-#include "GoblinBrain.hpp"
+#include "GoblinCore.hpp"
 
 void goblin_raspberry_pi(GoblinBrain& core) {
 

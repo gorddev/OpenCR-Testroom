@@ -39,7 +39,7 @@ namespace gobin {
                 t5s = true;
             } else t5s = false;
         }
-        friend class GoblinBrain;
+        friend class GoblinCore;
 
         void editToggle(bool b) {
             editable = b;

@@ -5,3 +5,4 @@
 #include "window/Clock.hpp"
 #include "RenderingSettings.hpp"
 #include "filesystem/filesystem.hpp"
+#include "input/MouseState.hpp"
